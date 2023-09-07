@@ -13,8 +13,8 @@ namespace DSP.Gateway.Data
         }
         public virtual DbSet<Address> Addresses { get; set; }
         public virtual DbSet<Province> Provinces { get; set; }
-
         public virtual DbSet<City> Cities { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

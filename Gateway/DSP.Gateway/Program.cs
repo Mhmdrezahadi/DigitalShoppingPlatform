@@ -176,6 +176,7 @@ builder.Services.AddAuthentication(options =>
         }
     };
 });
+
 builder.Services.AddHttpClient<CategoryHttpService>();
 builder.Services.AddHttpClient<ColorHttpService>();
 builder.Services.AddHttpClient<ManageHttpService>();

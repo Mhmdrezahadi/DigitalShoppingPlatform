@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using DSP.Gateway.Sevices;
 using DSP.Gateway.Utilities;
 
-namespace Tellbal.Controllers.V1.Management
+namespace DSP.Gateway.Controllers
 {
     [ApiController]
     [Route("api/v{version:apiVersion}/[controller]")]

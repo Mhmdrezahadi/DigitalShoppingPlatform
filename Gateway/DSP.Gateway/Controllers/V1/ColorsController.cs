@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using DSP.Gateway.Data;
 
-namespace Tellbal.Controllers.V1.Shopping
+namespace DSP.Gateway.Controllers
 {
     [ApiController]
     [Route("api/v{version:apiVersion}/[controller]")]

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Tellbal.Controllers.V1.Accounts
+namespace DSP.Gateway.Controllers
 {
     [ApiController]
     [Route("api/v{version:apiVersion}/[controller]")]

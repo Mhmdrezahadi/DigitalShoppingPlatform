@@ -9,7 +9,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using DSP.Gateway.Utilities;
 
-namespace Tellbal.Controllers.V1.Shopping
+namespace DSP.Gateway.Controllers
 {
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
