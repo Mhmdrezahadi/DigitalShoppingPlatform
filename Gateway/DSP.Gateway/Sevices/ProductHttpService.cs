@@ -1,6 +1,7 @@
 ﻿
 using DSP.Gateway.Data;
 using DSP.Gateway.Utilities;
+using Newtonsoft.Json;
 
 namespace DSP.Gateway.Sevices
 {
@@ -10,7 +11,7 @@ namespace DSP.Gateway.Sevices
 
         public ProductHttpService(HttpClient client)
         {
-            client.BaseAddress = new Uri("Product Base API Adress");
+            client.BaseAddress = new Uri("http://localhost:5301/api");
             Client = client;
 
         }
@@ -39,14 +40,22 @@ namespace DSP.Gateway.Sevices
             throw new NotImplementedException();
         }
 
-        public Task<ProductToReturnDTO> GetProducts(Guid id)
+        public async Task<ProductToReturnDTO> GetProducts(Guid id)
         {
-            throw new NotImplementedException();
+            var response = await Client.GetAsync("ProductsForAdmin");
+            var post = JsonConvert.DeserializeObject<ProductToReturnDTO>
+                (await response.Content.ReadAsStringAsync());
+            response.EnsureSuccessStatusCode();
+            return post;
         }
 
-        public ProductToReturnDTO GetProductsForAdmin(Guid id)
+        public async Task<ProductToReturnDTO> GetProductsForAdmin(Guid id)
         {
-            throw new NotImplementedException();
+            var response = await Client.GetAsync($"ProductsForAdmin/{id}");
+            var post = JsonConvert.DeserializeObject<ProductToReturnDTO>
+                (await response.Content.ReadAsStringAsync());
+            response.EnsureSuccessStatusCode();
+            return post;
         }
 
         public void GetSubcategories(List<int> list, CategoryToReturnDTO category)
@@ -74,14 +83,22 @@ namespace DSP.Gateway.Sevices
             throw new NotImplementedException();
         }
 
-        public Task<PagedList<ProductToReturnDTO>> SearchInProducts(PaginationParams<ProductSearch> pagination)
+        public async Task<PagedList<ProductToReturnDTO>> SearchInProducts(PaginationParams<ProductSearch> pagination)
         {
-            throw new NotImplementedException();
+            var response = await Client.GetAsync("Products");
+            var posts = JsonConvert.DeserializeObject<PagedList<ProductToReturnDTO>>
+                (await response.Content.ReadAsStringAsync());
+            response.EnsureSuccessStatusCode();
+            return posts;
         }
 
-        public Task<PagedList<ProductToReturnDTO>> SearchInProductsForAdmin(PaginationParams<ProductSearch> pagination)
+        public async Task<PagedList<ProductToReturnDTO>> SearchInProductsForAdmin(PaginationParams<ProductSearch> pagination)
         {
-            throw new NotImplementedException();
+            var response = await Client.GetAsync("Products");
+            var posts = JsonConvert.DeserializeObject<PagedList<ProductToReturnDTO>>
+                (await response.Content.ReadAsStringAsync());
+            response.EnsureSuccessStatusCode();
+            return posts;
         }
 
         public Task<bool> SetProductStatus(Guid productId, Status status)

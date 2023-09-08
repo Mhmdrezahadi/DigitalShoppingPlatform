@@ -36,7 +36,9 @@ namespace DSP.Gateway.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<PagedList<ProductToReturnDTO>>> SearchInProducts([FromQuery] PaginationParams<ProductSearch> pagination)
         {
-            return null;
+            PagedList<ProductToReturnDTO> result = await _productHttpService.SearchInProducts(pagination);
+
+            return Ok(result);
         }
 
         /// <summary>
@@ -63,9 +65,9 @@ namespace DSP.Gateway.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("Admin/Products/{id}")]
-        public ActionResult<ProductToReturnDTO> GetProductsForAdmin(Guid id)
+        public async Task<ActionResult<ProductToReturnDTO>> GetProductsForAdmin(Guid id)
         {
-            ProductToReturnDTO dto = _productHttpService.GetProductsForAdmin(id);
+            ProductToReturnDTO dto = await _productHttpService.GetProductsForAdmin(id);
 
             return Ok(dto);
         }
@@ -207,7 +209,7 @@ namespace DSP.Gateway.Controllers
         [HttpPost("Admin/Image")]
         public async Task<ActionResult<CreatedImageToReturnDTO>> AddImage(IFormFile Image)
         {
-            return null ;
+            return null;
         }
 
         /// <summary>
