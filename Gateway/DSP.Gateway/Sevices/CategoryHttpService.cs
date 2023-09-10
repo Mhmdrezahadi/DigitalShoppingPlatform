@@ -1,45 +1,88 @@
 ﻿
 using DSP.Gateway.Data;
 using Microsoft.Extensions.Caching.Memory;
+using Newtonsoft.Json;
+using Polly;
+using System.Net.Mime;
+using System.Text;
 
 namespace DSP.Gateway.Sevices
 {
     public class CategoryHttpService
     {
         public HttpClient Client { get; }
-        public CategoryHttpService(HttpClient client) 
+        public CategoryHttpService(HttpClient client)
         {
-            client.BaseAddress = new Uri("http://localhost:5301/DSP/ProductService");   
+            client.BaseAddress = new Uri("http://localhost:5301/DSP/ProductService/");
             Client = client;
         }
-        public Task<bool> AddCategory(CategoryForSetDTO dto)
+        //TODO Fix ImageService
+        public async Task<bool> AddCategory(CategoryForSetDTO dto)
         {
-            throw new NotImplementedException();
+            var data = JsonConvert.SerializeObject(dto);
+
+            var polly = Policy
+                .Handle<HttpRequestException>()
+                .WaitAndRetryAsync(3, pause => TimeSpan.FromSeconds(5));
+            bool result = false;
+
+            await polly.ExecuteAsync(async () =>
+            {
+                var response = await Client.PostAsync("Category", new StringContent(data, Encoding.UTF8, MediaTypeNames.Application.Json));
+                response.EnsureSuccessStatusCode();
+                result = JsonConvert.DeserializeObject<bool>(await response.Content.ReadAsStringAsync());
+            });
+            return result;
         }
 
-        public Task<List<CategoryToReturnDTO>> AllBrands()
+        public async Task<List<CategoryToReturnDTO>> AllBrands()
         {
-            throw new NotImplementedException();
+            var response = await Client.GetAsync($"Categories/AllBrands");
+            var allBrands = JsonConvert.DeserializeObject<List<CategoryToReturnDTO>>(await response.Content.ReadAsStringAsync());
+            response.EnsureSuccessStatusCode();
+            return allBrands;
         }
 
-        public Task<List<CategoryToReturnDTO>> AllModels()
+        public async Task<List<CategoryToReturnDTO>> AllModels()
         {
-            throw new NotImplementedException();
+            var response = await Client.GetAsync($"Categories/AllModels");
+            var allModels = JsonConvert.DeserializeObject<List<CategoryToReturnDTO>>(await response.Content.ReadAsStringAsync());
+            response.EnsureSuccessStatusCode();
+            return allModels;
         }
 
-        public Task<List<CategoryToReturnDTO>> BrandsOfCategory(int rootId)
+        public async Task<List<CategoryToReturnDTO>> BrandsOfCategory(int rootId)
         {
-            throw new NotImplementedException();
+            var response = await Client.GetAsync($"Categories/BrandsOfCategory?rootId={rootId}");
+            var brandsOfCategory = JsonConvert.DeserializeObject<List<CategoryToReturnDTO>>(await response.Content.ReadAsStringAsync());
+            response.EnsureSuccessStatusCode();
+            return brandsOfCategory;
         }
 
-        public Task<List<CategoryToReturnDTO>> CategoryArrange(int? parentId, List<int> arrangeIds)
+        public async Task<List<CategoryToReturnDTO>> CategoryArrange(int? parentId, List<int> arrangeIds)
         {
-            throw new NotImplementedException();
+            var data = JsonConvert.SerializeObject(arrangeIds);
+
+            var polly = Policy
+                .Handle<HttpRequestException>()
+                .WaitAndRetryAsync(3, pause => TimeSpan.FromSeconds(5));
+
+            await polly.ExecuteAsync(async () =>
+            {
+                var response = await Client.PutAsync($"Category/Arrange?parentId={parentId}", new StringContent(data, Encoding.UTF8, MediaTypeNames.Application.Json));
+                response.EnsureSuccessStatusCode();
+                var result = JsonConvert.DeserializeObject<List<CategoryToReturnDTO>>(await response.Content.ReadAsStringAsync());
+                return result;
+            });
+            return null;
         }
 
-        public Task<bool> DeleteCategory(int id)
+        public async Task<bool> DeleteCategory(int id)
         {
-            throw new NotImplementedException();
+            var response = await Client.DeleteAsync($"Category/{id}");
+            var result = JsonConvert.DeserializeObject<bool>(await response.Content.ReadAsStringAsync());
+            response.EnsureSuccessStatusCode();
+            return result;
         }
 
         public Task FirstRunAfterBoot()
@@ -52,14 +95,21 @@ namespace DSP.Gateway.Sevices
             throw new NotImplementedException();
         }
 
-        public List<CategoryWithBrandDTO> GetCategoriesWithBrands()
+        public async Task<List<CategoryWithBrandDTO>> GetCategoriesWithBrands()
         {
-            throw new NotImplementedException();
+            var response = await Client.GetAsync($"Category/CategoriesWithBrands");
+            var categoryWithBrands = JsonConvert.DeserializeObject<List<CategoryWithBrandDTO>>(await response.Content.ReadAsStringAsync());
+            response.EnsureSuccessStatusCode();
+            return categoryWithBrands;
         }
 
-        public Task<List<CategoryToReturnDTO>> GetParentCategories(int id)
+        public async Task<List<CategoryToReturnDTO>> GetParentCategories(int id)
         {
-            throw new NotImplementedException();
+
+            var response = await Client.GetAsync($"Category/{id}/ParentCategories");
+            var parentCategories = JsonConvert.DeserializeObject<List<CategoryToReturnDTO>>(await response.Content.ReadAsStringAsync());
+            response.EnsureSuccessStatusCode();
+            return parentCategories;
         }
 
         public Task<List<int>> GetRootNodesIds()
@@ -67,9 +117,12 @@ namespace DSP.Gateway.Sevices
             throw new NotImplementedException();
         }
 
-        public Task<List<CategoryToReturnDTO>> GetSubCategories(int id)
+        public async Task<List<CategoryToReturnDTO>> GetSubCategories(int id)
         {
-            throw new NotImplementedException();
+            var response = await Client.GetAsync($"Category/{id}/SubCategories");
+            var subCategories = JsonConvert.DeserializeObject<List<CategoryToReturnDTO>>(await response.Content.ReadAsStringAsync());
+            response.EnsureSuccessStatusCode();
+            return subCategories;
         }
 
         public List<int> GetTreeFromCache(int CategoryId)
@@ -77,9 +130,12 @@ namespace DSP.Gateway.Sevices
             throw new NotImplementedException();
         }
 
-        public Task<List<CategoryToReturnDTO>> ModelsOfBrand(int brandCategoryid)
+        public async Task<List<CategoryToReturnDTO>> ModelsOfBrand(int brandCategoryid)
         {
-            throw new NotImplementedException();
+            var response = await Client.GetAsync($"Categories/ModelsOfBrand?brandCategoryid={brandCategoryid}");
+            var modelsOfBrand = JsonConvert.DeserializeObject<List<CategoryToReturnDTO>>(await response.Content.ReadAsStringAsync());
+            response.EnsureSuccessStatusCode();
+            return modelsOfBrand;
         }
 
         public Task<List<int>> MyPathToLeaf(List<int> path, int rootId, bool isVerified)
@@ -97,11 +153,14 @@ namespace DSP.Gateway.Sevices
             throw new NotImplementedException();
         }
 
-        public Task<List<CategoryToReturnDTO>> RootCategories()
+        public async Task<List<CategoryToReturnDTO>> RootCategories()
         {
-            throw new NotImplementedException();
+            var response = await Client.GetAsync($"Categories/RootCategories");
+            var rootCategories = JsonConvert.DeserializeObject<List<CategoryToReturnDTO>>(await response.Content.ReadAsStringAsync());
+            response.EnsureSuccessStatusCode();
+            return rootCategories;
         }
-
+        // TODO Fix ImageService
         public Task<bool> UpdateCategory(int catId, CategoryForSetDTO category)
         {
             throw new NotImplementedException();

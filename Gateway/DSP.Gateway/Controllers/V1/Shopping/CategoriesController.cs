@@ -227,9 +227,9 @@ namespace DSP.Gateway.Controllers
         [HttpGet("App/Category/CategoriesWithBrands")]
         [HttpGet("Web/Category/CategoriesWithBrands")]
         [AllowAnonymous]
-        public ActionResult<List<CategoryWithBrandDTO>> GetCategoriesWithBrands()
+        public async Task<ActionResult<List<CategoryWithBrandDTO>>> GetCategoriesWithBrands()
         {
-            List<CategoryWithBrandDTO> ls = _categoryHttpService.GetCategoriesWithBrands();
+            List<CategoryWithBrandDTO> ls = await _categoryHttpService.GetCategoriesWithBrands();
 
             return Ok(ls);
         }
