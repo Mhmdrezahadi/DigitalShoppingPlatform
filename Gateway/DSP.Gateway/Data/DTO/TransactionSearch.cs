@@ -24,7 +24,7 @@ namespace DSP.Gateway.Data
     public enum PaymentType
     {
         /// <summary>
-        /// خرید از تل بال
+        /// خرید از پلتفرم
         /// </summary>
         Shopping,
 

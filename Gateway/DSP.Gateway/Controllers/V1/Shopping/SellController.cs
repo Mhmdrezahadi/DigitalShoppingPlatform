@@ -126,57 +126,6 @@ namespace DSP.Gateway.Controllers
             return Ok(ls);
         }
 
-        ///// <summary>
-        ///// پیشنهاد معاوضه 
-        ///// کالای اولی مربوط به کاربر 
-        ///// کالای دوم پیشنهاد کالای تل بال جهت معاوضه
-        ///// </summary>
-        ///// <returns></returns>
-        //[HttpGet("App/OneOfMyProductForExchange")]
-        //[HttpGet("Web/OneOfMyProductForExchange")]
-        //public async Task<ActionResult<List<ProductToReturnDTO>>> OneOfMyProductForExchange()
-        //{
-        //    return Ok(new List<ProductToReturnDTO>());
-        //}
-
-        ///// <summary>
-        ///// لیست پیشنهادات تعویض
-        ///// </summary>
-        ///// <remarks>
-        ///// در هر پیشنهاد
-        ///// کالای اولی مربوط به کاربر 
-        ///// کالای دوم پیشنهاد کالای تل بال جهت معاوضه
-        ///// </remarks>
-        ///// <returns>List of List of ProductToReturnDTO</returns>
-        //[HttpGet("App/MyProductsListOfExchange")]
-        //[HttpGet("Web/MyProductsListOfExchange")]
-        //public async Task<ActionResult<List<List<ProductToReturnDTO>>>> MyProductsListOfExchange()
-        //{
-        //    return Ok(new List<List<ProductToReturnDTO>>());
-        //}
-
-        ///// <summary>
-        ///// Get suggestion values by propertyKeyId
-        ///// </summary>
-        ///// <returns></returns>
-        //[HttpGet("App/SuggestionValues")]
-        //public async Task<ActionResult<bool>> SuggestionValues()
-        //{
-        //    return Ok(Task.FromResult(true));
-        //}
-
-        ///// <summary>
-        ///// Get distinct property sections of key value => for auto completion
-        ///// </summary>
-        ///// <returns></returns>
-        //[HttpGet("App/DistinctKeyValue")]
-        //public async Task<ActionResult<bool>> DistinctKeyValue()
-        //{
-        //    return Ok(Task.FromResult(true));
-        //}
-
-
-
 
         /// <summary>
         /// دریافت کلید ها و مقدار های قیمت گذاری بدون افزودن دستگاه

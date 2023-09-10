@@ -8,7 +8,7 @@ namespace DSP.Gateway.Sevices
         public HttpClient Client { get; }
         public SellHttpService(HttpClient client)
         {
-            client.BaseAddress = new Uri("Sell Base API Adress");
+            client.BaseAddress = new Uri("http://localhost:5301/DSP/ProductService");
             Client = client;
         }
         public Task<Guid> AddDevice(Guid userId, FastPricingForCreateDTO dto)

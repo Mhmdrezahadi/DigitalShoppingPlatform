@@ -9,7 +9,7 @@ namespace DSP.Gateway.Sevices
         public HttpClient Client { get; }
         public CategoryHttpService(HttpClient client) 
         {
-            client.BaseAddress = new Uri("Category Base API Adress");
+            client.BaseAddress = new Uri("http://localhost:5301/DSP/ProductService");   
             Client = client;
         }
         public Task<bool> AddCategory(CategoryForSetDTO dto)

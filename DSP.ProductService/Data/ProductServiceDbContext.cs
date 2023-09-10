@@ -42,9 +42,20 @@ namespace DSP.ProductService.Data
         public virtual DbSet<Basket> Baskets { get; set; }
         public virtual DbSet<BasketDetail> BasketDetails { get; set; }
         public virtual DbSet<ProductDetail> ProductDetails { get; set; }
-        protected override void OnModelCreating(ModelBuilder builder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(builder);
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.HasAnnotation(
+                "Relational:Collation",
+                "Persian_100_CI_AS");
+
+            var entitiesAssembly = typeof(IEntity).Assembly;
+
+            modelBuilder.RegisterAllEntities<IEntity>(entitiesAssembly);
+            modelBuilder.RegisterEntityTypeConfiguration(entitiesAssembly);
+            modelBuilder.AddRestrictDeleteBehaviorConvention();
+            modelBuilder.AddSequentialGuidForIdConvention();
         }
     }
 }

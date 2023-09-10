@@ -51,7 +51,6 @@ namespace DSP.Gateway.Controllers
         /// <returns></returns>
         [HttpGet("App/GetOtp")]
         [HttpGet("Web/GetOtp")]
-        [HttpGet("Admin/GetOtp")]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<string>> GetOtp([FromQuery][Required] string mobileNumber)

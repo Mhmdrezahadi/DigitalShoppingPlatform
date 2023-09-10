@@ -2,15 +2,16 @@
 using DSP.Gateway.Data;
 using DSP.Gateway.Data.Pricing;
 using DSP.Gateway.Utilities;
+using Newtonsoft.Json;
 
 namespace DSP.Gateway.Sevices
 {
-    public class ManageHttpService 
+    public class ManageHttpService
     {
         public HttpClient Client { get; }
         public ManageHttpService(HttpClient client)
         {
-            client.BaseAddress = new Uri("Manage Base API Adress");
+            client.BaseAddress = new Uri("http://localhost:5301/DSP/ProductService");
             Client = client;
         }
 
@@ -69,9 +70,15 @@ namespace DSP.Gateway.Sevices
             throw new NotImplementedException();
         }
 
-        public Task<List<PropertyKeyDTO>> GetPropertyKeys(int catId)
+        public async Task<List<PropertyKeyDTO>> GetPropertyKeys(int catId)
         {
-            throw new NotImplementedException();
+            var response = await Client.GetAsync($"PropertyKeys/{catId}");
+
+            var posts = JsonConvert.DeserializeObject<List<PropertyKeyDTO>>
+                (await response.Content.ReadAsStringAsync());
+
+            response.EnsureSuccessStatusCode();
+            return posts;
         }
 
         public TransactionToReturnDTO GetTransaction(Guid id)

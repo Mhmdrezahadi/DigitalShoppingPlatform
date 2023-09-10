@@ -9,7 +9,7 @@ namespace DSP.Gateway.Sevices
         public HttpClient Client { get; }
         public PaymentHttpService(HttpClient client)
         {
-            client.BaseAddress = new Uri("Payment Base API Adress");
+            client.BaseAddress = new Uri("http://localhost:5301/DSP/ProductService");
             Client = client;
         }
         public List<SupportedPayment> GetSupportedPayments()

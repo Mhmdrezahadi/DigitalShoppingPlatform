@@ -8,7 +8,7 @@ namespace DSP.Gateway.Sevices
         public HttpClient Client { get; }
         public ColorHttpService(HttpClient client)
         {
-            client.BaseAddress = new Uri("Color Base API Address");
+            client.BaseAddress = new Uri("http://localhost:5301/DSP/ProductService");
             Client = client;
         }
         public bool AddColor(ProductColorDTO color)

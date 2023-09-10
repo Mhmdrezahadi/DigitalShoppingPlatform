@@ -27,7 +27,7 @@ namespace DSP.Gateway.Data
         InProcess,
 
         /// <summary>
-        /// تحویل به سفیر تل بال
+        /// تحویل به سفیر 
         /// </summary>
         AgentDelivered,
 

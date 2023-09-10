@@ -242,7 +242,7 @@ namespace DSP.Gateway.Sevices
             //var smsApi = new KavenegarApi("SmsApiKey");
             var random = new Random();
             var verificationCode = random.Next(1111, 9999).ToString();
-            //var result = smsApi.Send("", mobileNumber, $"کد تایید تل بال: {verificationCode}");
+            //var result = smsApi.Send("", mobileNumber, $"کد تایید : {verificationCode}");
 
             SendResult result;
             if (!_env.IsDevelopment())

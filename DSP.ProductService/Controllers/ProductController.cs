@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace DSP.ProductService.Controllers
 {
     [ApiController]
-    [Route("DSP/ProductService/[controller]")]
+    [Route("DSP/ProductService")]
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
@@ -154,6 +154,38 @@ namespace DSP.ProductService.Controllers
             bool res = await _productService.SetProductStatus(productId, status);
 
             return Ok(res);
+        }
+
+        [HttpPost("Colors")]
+        public ActionResult<bool> AddColor(ProductColorDTO color)
+        {
+            bool res = _productService.AddColor(color);
+
+            return Ok(res);
+        }
+
+        [HttpDelete("Colors/{id}")]
+        public ActionResult<bool> RemoveColor(Guid id)
+        {
+            bool res = _productService.RemoveColor(id);
+
+            return Ok(res);
+        }
+
+        [HttpPut("Colors")]
+        public ActionResult<bool> EditColor(ProductColorDTO color)
+        {
+            bool res = _productService.EditColor(color);
+
+            return Ok(res);
+        }
+
+        [HttpGet("Colors")]
+        public ActionResult<List<ProductColorDTO>> ColorsList()
+        {
+            List<ProductColorDTO> dto = _productService.GetColorsList();
+
+            return Ok(dto);
         }
     }
 }

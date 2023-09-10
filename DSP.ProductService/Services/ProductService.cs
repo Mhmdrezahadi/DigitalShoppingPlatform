@@ -963,5 +963,74 @@ namespace DSP.ProductService.Services
 
             return true;
         }
+        public bool AddColor(ProductColorDTO color)
+        {
+            _dbContext.Colors.Add(new Color
+            {
+                Code = color.Code,
+                Name = color.Name
+            });
+            _dbContext.SaveChanges();
+
+            return true;
+        }
+
+        public bool RemoveColor(Guid id)
+        {
+            var dbColor = _dbContext.Colors.Where(x => x.Id == id).FirstOrDefault();
+            if (dbColor == null)
+                throw new NotFoundException($"Not Found Color With id {id}");
+
+            _dbContext.Colors.Remove(dbColor);
+
+            try
+            {
+                _dbContext.SaveChanges();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException.Message.Contains("The DELETE statement conflicted with the REFERENCE constraint"))
+                {
+                    dbColor.IsVerified = false;
+
+                    _dbContext.Colors.Update(dbColor);
+
+                    _dbContext.SaveChanges();
+
+                    return true;
+                }
+                return false;
+            }
+        }
+
+        public bool EditColor(ProductColorDTO color)
+        {
+            var dbColor = _dbContext.Colors.Where(x => x.Id == color.Id).FirstOrDefault();
+            if (dbColor == null)
+                throw new NotFoundException($"Not Found Color With id {color.Id}");
+
+            dbColor.Name = color.Name;
+            dbColor.Code = color.Code;
+
+            _dbContext.Colors.Update(dbColor);
+
+            _dbContext.SaveChanges();
+
+            return true;
+        }
+
+        public List<ProductColorDTO> GetColorsList()
+        {
+            return _dbContext.Colors
+                .Where(x => x.IsVerified == true)
+                .Select(s => new ProductColorDTO
+                {
+                    Code = s.Code,
+                    Name = s.Name,
+                    Id = s.Id
+                }).ToList();
+        }
     }
 }

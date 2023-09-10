@@ -9,7 +9,7 @@ namespace DSP.Gateway.Sevices
         public HttpClient Client { get; }
         public OrderHttpService(HttpClient client)
         {
-            client.BaseAddress = new Uri("Order Base API Adress");
+            client.BaseAddress = new Uri("http://localhost:5301/DSP/ProductService");
             Client = client;
         }
         public Task<int> AddToBasket(Guid userId, Guid itemId, Guid ColorId)

@@ -22,5 +22,9 @@ namespace DSP.ProductService.Services
         Task<bool> SetProductStatus(Guid productId, Status status);
         ProductToReturnDTO GetProductsForAdmin(Guid id);
         Task<bool> RemoveProduct(Guid productId);
+        bool AddColor(ProductColorDTO color);
+        bool EditColor(ProductColorDTO color);
+        bool RemoveColor(Guid id);
+        List<ProductColorDTO> GetColorsList();
     }
 }

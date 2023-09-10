@@ -109,7 +109,7 @@ namespace DSP.Gateway.Controllers
         /// <returns></returns>
         [HttpGet("App/CompareTwoProduct")]
         [HttpGet("Web/CompareTwoProduct")]
-        public async Task<ActionResult<List<ProductToReturnDTO>>> CompareTwoProduct(List<Guid> productIds)
+        public async Task<ActionResult<List<ProductToReturnDTO>>> CompareTwoProduct([FromQuery] List<Guid> productIds)
         {
             List<ProductToReturnDTO> ls = await _productHttpService.CompareTwoProduct(productIds);
 
@@ -145,10 +145,7 @@ namespace DSP.Gateway.Controllers
         [HttpGet("Web/ProductPriceLogOfWeek")]
         public async Task<ActionResult<List<PriceLogDTO>>> ProductPriceLogOfWeek(Guid productId)
         {
-            DateTime fromDT = DateTime.Now.AddDays(-7);
-            DateTime toDT = DateTime.Now;
-
-            List<PriceLogDTO> ls = await _productHttpService.ProductPriceLogInDateRange(productId, fromDT, toDT);
+            List<PriceLogDTO> ls = await _productHttpService.ProductPriceLogInDateRange(productId);
 
             return Ok(ls);
         }
@@ -165,10 +162,7 @@ namespace DSP.Gateway.Controllers
         [HttpGet("Web/ProductPriceLogOfMonth")]
         public async Task<ActionResult<List<PriceLogDTO>>> ProductPriceLogOfMonth(Guid productId)
         {
-            DateTime fromDT = DateTime.Now.AddDays(-30);
-            DateTime toDT = DateTime.Now;
-
-            List<PriceLogDTO> ls = await _productHttpService.ProductPriceLogInDateRange(productId, fromDT, toDT);
+            List<PriceLogDTO> ls = await _productHttpService.ProductPriceLogInDateRange(productId);
 
             return Ok(ls);
         }
@@ -183,7 +177,9 @@ namespace DSP.Gateway.Controllers
         [HttpGet("Web/PropertyKeys")]
         public async Task<ActionResult<List<PropertyKeyDTO>>> GetPropertyKeys(int catId)
         {
-            return null;
+            List<PropertyKeyDTO> ls = await _manageHttpService.GetPropertyKeys(catId);
+
+            return Ok(ls);
         }
 
         /// <summary>
@@ -193,9 +189,10 @@ namespace DSP.Gateway.Controllers
         /// <returns></returns>
         [Authorize(Roles = "Admin,SuperAdmin")]
         [HttpPost("Admin/Product")]
-        public async Task<ActionResult<Guid>> AddProduct([FromBody] ProductForCreateDTO dto)
+        public async Task<ActionResult<Guid?>> AddProduct([FromBody] ProductForCreateDTO dto)
         {
-            return null;
+            Guid? id = await _productHttpService.AddProduct(dto);
+            return Ok(id);
         }
 
         /// <summary>
@@ -234,7 +231,9 @@ namespace DSP.Gateway.Controllers
         [HttpPut("Admin/Product/{productId}")]
         public async Task<ActionResult<bool>> EditProduct(Guid productId, [FromBody] ProductForCreateDTO dto)
         {
-            return true;
+            bool res = await _productHttpService.EditProduct(productId, dto);
+
+            return Ok(res);
         }
         /// <summary>
         /// حذف محصول
@@ -245,7 +244,9 @@ namespace DSP.Gateway.Controllers
         [HttpDelete("Admin/Product/{productId}")]
         public async Task<ActionResult<bool>> RemoveProduct(Guid productId)
         {
-            return true;
+            bool res = await _productHttpService.RemoveProduct(productId);
+
+            return Ok(res);
         }
         /// <summary>
         /// تغییر استاتوس یک محصول
@@ -260,8 +261,64 @@ namespace DSP.Gateway.Controllers
         [HttpPatch("Admin/Product/{productId}")]
         public async Task<ActionResult<bool>> SetProductStatus(Guid productId, Status status)
         {
-            return true;
+            bool res = await _productHttpService.SetProductStatus(productId, status);
+
+            return Ok(res);
+        }
+        /// <summary>
+        /// افزودن رنگ
+        /// </summary>
+        /// <remarks>وارد نشود id برای افزودن </remarks>
+        /// <param name="color"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "Admin,SuperAdmin")]
+        [HttpPost("Admin/Colors")]
+        public async Task<ActionResult<bool>> AddColor(ProductColorDTO color)
+        {
+            bool res = await _productHttpService.AddColor(color);
+
+            return Ok(res);
         }
 
+        /// <summary>
+        /// حذف رنگ
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "Admin,SuperAdmin")]
+        [HttpDelete("Admin/Colors/{id}")]
+        public async Task<ActionResult<bool>> RemoveColor(Guid id)
+        {
+            bool res = await _productHttpService.RemoveColor(id);
+
+            return Ok(res);
+        }
+
+        /// <summary>
+        /// ویرایش رنگ
+        /// </summary>
+        /// <param name="color"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "Admin,SuperAdmin")]
+        [HttpPut("Admin/Colors")]
+        public async Task<ActionResult<bool>> EditColor(ProductColorDTO color)
+        {
+            bool res = await _productHttpService.EditColor(color);
+
+            return Ok(res);
+        }
+
+        /// <summary>
+        /// لیست رنگ ها
+        /// </summary>
+        /// <returns></returns>
+        [Authorize(Roles = "Admin,SuperAdmin")]
+        [HttpGet("Admin/Colors")]
+        public async Task<ActionResult<List<ProductColorDTO>>> ColorsList()
+        {
+            List<ProductColorDTO> dto = await _productHttpService.GetColorsList();
+
+            return Ok(dto);
+        }
     }
 }

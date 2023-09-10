@@ -1,8 +1,22 @@
+using DSP.ProductService.Data;
+using DSP.ProductService.Services;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddScoped<IProductService,ProductService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IManageService, ManageService>();
+builder.Services.AddMemoryCache();
+
+
+builder.Services.AddDbContext<ProductServiceDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ProductServiceConnection"));
+});
 
 var app = builder.Build();
 

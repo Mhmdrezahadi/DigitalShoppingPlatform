@@ -42,7 +42,7 @@ namespace DSP.Gateway.Data
         Paid,
 
         /// <summary>
-        /// عدم موافقت تل بال
+        /// عدم موافقت
         /// </summary>
         [Display(Name = "عدم توافق‌")]
         Rejected

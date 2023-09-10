@@ -20,60 +20,60 @@ namespace DSP.Gateway.Controllers
         {
             _colorHttpService = colorHttpService;
         }
-        /// <summary>
-        /// افزودن رنگ
-        /// </summary>
-        /// <remarks>وارد نشود id برای افزودن </remarks>
-        /// <param name="color"></param>
-        /// <returns></returns>
-        [Authorize(Roles = "Admin,SuperAdmin")]
-        [HttpPost("Admin/Colors")]
-        public ActionResult<bool> AddColor(ProductColorDTO color)
-        {
-            bool res = _colorHttpService.AddColor(color);
+        ///// <summary>
+        ///// افزودن رنگ
+        ///// </summary>
+        ///// <remarks>وارد نشود id برای افزودن </remarks>
+        ///// <param name="color"></param>
+        ///// <returns></returns>
+        //[Authorize(Roles = "Admin,SuperAdmin")]
+        //[HttpPost("Admin/Colors")]
+        //public ActionResult<bool> AddColor(ProductColorDTO color)
+        //{
+        //    bool res = _colorHttpService.AddColor(color);
 
-            return Ok(res);
-        }
+        //    return Ok(res);
+        //}
 
-        /// <summary>
-        /// حذف رنگ
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [Authorize(Roles = "Admin,SuperAdmin")]
-        [HttpDelete("Admin/Colors/{id}")]
-        public ActionResult<bool> RemoveColor(Guid id)
-        {
-            bool res = _colorHttpService.RemoveColor(id);
+        ///// <summary>
+        ///// حذف رنگ
+        ///// </summary>
+        ///// <param name="id"></param>
+        ///// <returns></returns>
+        //[Authorize(Roles = "Admin,SuperAdmin")]
+        //[HttpDelete("Admin/Colors/{id}")]
+        //public ActionResult<bool> RemoveColor(Guid id)
+        //{
+        //    bool res = _colorHttpService.RemoveColor(id);
 
-            return Ok(res);
-        }
+        //    return Ok(res);
+        //}
 
-        /// <summary>
-        /// ویرایش رنگ
-        /// </summary>
-        /// <param name="color"></param>
-        /// <returns></returns>
-        [Authorize(Roles = "Admin,SuperAdmin")]
-        [HttpPut("Admin/Colors")]
-        public ActionResult<bool> EditColor(ProductColorDTO color)
-        {
-            bool res = _colorHttpService.EditColor(color);
+        ///// <summary>
+        ///// ویرایش رنگ
+        ///// </summary>
+        ///// <param name="color"></param>
+        ///// <returns></returns>
+        //[Authorize(Roles = "Admin,SuperAdmin")]
+        //[HttpPut("Admin/Colors")]
+        //public ActionResult<bool> EditColor(ProductColorDTO color)
+        //{
+        //    bool res = _colorHttpService.EditColor(color);
 
-            return Ok(res);
-        }
+        //    return Ok(res);
+        //}
 
-        /// <summary>
-        /// لیست رنگ ها
-        /// </summary>
-        /// <returns></returns>
-        [Authorize(Roles = "Admin,SuperAdmin")]
-        [HttpGet("Admin/Colors")]
-        public ActionResult<List<ProductColorDTO>> ColorsList()
-        {
-            List<ProductColorDTO> dto = _colorHttpService.GetColorsList();
+        ///// <summary>
+        ///// لیست رنگ ها
+        ///// </summary>
+        ///// <returns></returns>
+        //[Authorize(Roles = "Admin,SuperAdmin")]
+        //[HttpGet("Admin/Colors")]
+        //public ActionResult<List<ProductColorDTO>> ColorsList()
+        //{
+        //    List<ProductColorDTO> dto = _colorHttpService.GetColorsList();
 
-            return Ok(dto);
-        }
+        //    return Ok(dto);
+        //}
     }
 }
