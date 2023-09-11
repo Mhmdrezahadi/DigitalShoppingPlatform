@@ -7,7 +7,7 @@ namespace DSP.ProductService.Services
 {
     public interface IProductService
     {
-        void GetSubcategories(List<int> list, Category category);
+        void GetSubcategories(List<Guid> list, Category category);
         Task<PagedList<ProductToReturnDTO>> SearchInProducts(PaginationParams<ProductSearch> pagination);
         Task<List<ProductToReturnDTO>> CompareTwoProduct(List<Guid> productIds);
         Task<Guid> AddProduct(ProductForCreateDTO dto);

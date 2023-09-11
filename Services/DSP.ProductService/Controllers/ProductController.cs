@@ -102,7 +102,7 @@ namespace DSP.ProductService.Controllers
         }
 
         [HttpGet("PropertyKeys")]
-        public async Task<ActionResult<List<PropertyKeyDTO>>> GetPropertyKeys(int catId)
+        public async Task<ActionResult<List<PropertyKeyDTO>>> GetPropertyKeys(Guid catId)
         {
             List<PropertyKeyDTO> ls = await _manageService.GetPropertyKeys(catId);
 

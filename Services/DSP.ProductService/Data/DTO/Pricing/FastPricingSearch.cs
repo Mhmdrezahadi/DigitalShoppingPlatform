@@ -11,15 +11,15 @@ namespace DSP.ProductService.Data
         /// <summary>
         ///  دسته بندی
         /// </summary>
-        public int? CategoryId { get; set; }
+        public Guid? CategoryId { get; set; }
         /// <summary>
         ///  برند
         /// </summary>
-        public int? BrandId { get; set; }
+        public Guid? BrandId { get; set; }
         /// <summary>
         /// مدل
         /// </summary>
-        public int? ModelId { get; set; }
+        public Guid? ModelId { get; set; }
         /// <summary>
         /// مرتب سازی
         /// </summary>

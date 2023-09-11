@@ -5,7 +5,7 @@
         /// <summary>
         /// جستجو در داخل یک دسته بندی
         /// </summary>
-        public int? CategoryId { get; set; } = null;
+        public Guid? CategoryId { get; set; } = null;
 
         /// <summary>
         /// متن جستجو
@@ -25,12 +25,12 @@
         /// <summary>
         /// جست و جو در داخل یک برند
         /// </summary>
-        public int? BrandId { get; set; } = null;
+        public Guid? BrandId { get; set; } = null;
 
         /// <summary>
         /// جست و جو در داخل یک مدل
         /// </summary>
-        public int? ModelId { get; set; } = null;
+        public Guid? ModelId { get; set; } = null;
     }
 }
 

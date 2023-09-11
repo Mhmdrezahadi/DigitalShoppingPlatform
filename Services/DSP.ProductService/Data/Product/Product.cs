@@ -27,7 +27,7 @@ namespace DSP.ProductService.Data
         public ICollection<PropertyValue> PropertyValues { get; set; }
         public string Warranty { get; set; }
         public Category Category { get; set; }
-        public int CategoryId { get; set; }
+        public Guid CategoryId { get; set; }
         public ICollection<Product> RelatedProducts { get; set; }
         public ICollection<HashTag> HashTags { get; set; }
         public ICollection<FastPricingDefinition> FastPricingDefinitions { get; set; }

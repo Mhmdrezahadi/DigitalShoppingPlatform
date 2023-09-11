@@ -2,12 +2,6 @@
 using DSP.ProductService.Data;
 using DSP.ProductService.Utilities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using ValueType = DSP.ProductService.Data.ValueType;
 
 namespace DSP.ProductService.Services
@@ -649,7 +643,7 @@ namespace DSP.ProductService.Services
             return await PagedList<FastPricingDefinitionToReturnDTO>.CreateAsync(resultQuery, pagination.CurrentPage, pagination.CurrentPage);
         }
 
-        public async Task<List<PropertyKeyDTO>> GetPropertyKeys(int catId)
+        public async Task<List<PropertyKeyDTO>> GetPropertyKeys(Guid catId)
         {
             return await _dbContext.PropertyKeys
                 .Where(x => x.CategoryId == catId)
@@ -1263,7 +1257,7 @@ namespace DSP.ProductService.Services
             return dto;
         }
 
-        public bool IsModelDefined(int id)
+        public bool IsModelDefined(Guid id)
         {
             return _dbContext.FastPricingDefinitions.Where(x => x.CategoryId == id).Any();
         }

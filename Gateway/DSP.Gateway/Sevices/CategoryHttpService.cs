@@ -1,5 +1,8 @@
 ﻿
 using DSP.Gateway.Data;
+using DSP.Gateway.Utilities;
+using DSP.ImageService.Protos;
+using Grpc.Net.Client;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using Polly;
@@ -21,18 +24,24 @@ namespace DSP.Gateway.Sevices
         {
             var data = JsonConvert.SerializeObject(dto);
 
-            var polly = Policy
-                .Handle<HttpRequestException>()
-                .WaitAndRetryAsync(3, pause => TimeSpan.FromSeconds(5));
-            bool result = false;
+            var response = await Client.PostAsync("Category", new StringContent(data, Encoding.UTF8, MediaTypeNames.Application.Json));
+            response.EnsureSuccessStatusCode();
+            var result = JsonConvert.DeserializeObject<Guid?>(await response.Content.ReadAsStringAsync());
 
-            await polly.ExecuteAsync(async () =>
+            if (result.HasValue)
             {
-                var response = await Client.PostAsync("Category", new StringContent(data, Encoding.UTF8, MediaTypeNames.Application.Json));
-                response.EnsureSuccessStatusCode();
-                result = JsonConvert.DeserializeObject<bool>(await response.Content.ReadAsStringAsync());
-            });
-            return result;
+                var polly = Policy.Handle<Exception>()
+                        .CircuitBreakerAsync(2, TimeSpan.FromSeconds(20));
+
+                await polly.ExecuteAsync(async () =>
+                {
+                    using var channel = GrpcChannel.ForAddress("https://localhost:5303");
+                    var uploadFileClient = new UploadFileService.UploadFileServiceClient(channel);
+                    await UploadImage.SendFile(uploadFileClient, dto.Img, result.ToString());
+                });
+                return true;
+            }
+            return false;
         }
 
         public async Task<List<CategoryToReturnDTO>> AllBrands()

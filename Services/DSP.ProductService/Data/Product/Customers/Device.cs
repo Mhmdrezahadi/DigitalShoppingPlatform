@@ -9,7 +9,7 @@ namespace DSP.ProductService.Data
     public class Device : BaseEntity<Guid>
     {
         public Category Category { get; set; }
-        public int CategoryId { get; set; }
+        public Guid CategoryId { get; set; }
         public bool IsPriced { get; set; } = false;
         public SellRequest SellRequest { get; set; }
         public ExchangeRequest ExchangeRequest { get; set; }

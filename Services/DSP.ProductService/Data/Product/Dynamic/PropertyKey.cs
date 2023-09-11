@@ -9,7 +9,7 @@ namespace DSP.ProductService.Data
     {
         public string Name { get; set; }
         public KeyType KeyType { get; set; }
-        public int CategoryId { get; set; }
+        public Guid CategoryId { get; set; }
         public Category Category { get; set; }
         public ICollection<PropertyValue> PropertyValues { get; set; }
     }

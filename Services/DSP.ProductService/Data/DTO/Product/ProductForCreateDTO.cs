@@ -20,7 +20,7 @@ namespace DSP.ProductService.Data
         public double Discount { get; set; }
         public ProductType ProductType { get; set; }
         [Required]
-        public int CategoryId { get; set; }
+        public Guid CategoryId { get; set; }
         public List<PropertyValueForCreateDTO> PropertyValues { get; set; }
         public List<Guid> ImagesIds { get; set; }
         public Status Status { get; set; }

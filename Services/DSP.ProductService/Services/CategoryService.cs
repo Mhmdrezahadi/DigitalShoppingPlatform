@@ -18,53 +18,6 @@ namespace DSP.ProductService.Services
             _dbContext = dbContext;
         }
 
-        public async Task<List<int>> FlattenedTree(int CategoryId)
-        {
-            List<int> res = new();
-
-            res.Add(CategoryId);
-
-            var childs = await _dbContext.Categories
-                .Where(x => x.ParentCategoryId.Value == CategoryId)
-                .Select(s => s.Id)
-                .ToListAsync();
-
-            res.AddRange(childs);
-
-            foreach (var item in childs)
-            {
-                res.AddRange(await FlattenedTree(item));
-            }
-
-            _treeCache.Set(CategoryId, res);
-
-            return res;
-        }
-
-        public async Task<List<int>> GetRootNodesIds()
-        {
-
-            return null;
-            //return await _dbContext.Categories
-            //      .Where(x => x.ParentCategoryId == null && x.IsVerified == true)
-            //      .Select(s => s.Id)
-            //      .ToListAsync();
-        }
-
-        public async Task FirstRunAfterBoot()
-        {
-            var ls = await GetRootNodesIds();
-            foreach (var item in ls)
-            {
-                await FlattenedTree(item);
-            }
-        }
-
-        public List<int> GetTreeFromCache(int CategoryId)
-        {
-            return _treeCache.Get<List<int>>(CategoryId);
-        }
-
         public async Task<List<CategoryToReturnDTO>> RootCategories()
         {
             return await _dbContext.Categories
@@ -82,7 +35,7 @@ namespace DSP.ProductService.Services
                 }).ToListAsync();
         }
 
-        public async Task<List<CategoryToReturnDTO>> BrandsOfCategory(int rootId)
+        public async Task<List<CategoryToReturnDTO>> BrandsOfCategory(Guid rootId)
         {
             return await _dbContext.Categories
                 .Where(x => x.ParentCategoryId == rootId && x.IsVerified == true)
@@ -121,7 +74,7 @@ namespace DSP.ProductService.Services
             return categoryResult;
         }
 
-        public async Task<List<CategoryToReturnDTO>> ModelsOfBrand(int brandCategoryid)
+        public async Task<List<CategoryToReturnDTO>> ModelsOfBrand(Guid brandCategoryid)
         {
             return await _dbContext.Categories
                 //.Where(x => x.Level == 3)
@@ -141,104 +94,8 @@ namespace DSP.ProductService.Services
                 .ToListAsync();
         }
 
-        public async Task<List<int>> PathToRoot(int categoryId)
-        {
-            List<int> path = new();
 
-            var parentId = await _dbContext.Categories
-                .Where(x => x.Id == categoryId)
-                .Select(x => x.ParentCategoryId)
-                .FirstOrDefaultAsync();
-
-            path.Add(categoryId);
-
-            if (parentId is null)
-            {
-                return path;
-            }
-
-            path.AddRange(await PathToRoot(parentId.Value));
-
-            return path;
-        }
-
-        public async Task<List<int>> MyPathToRoot(List<int> path, int categoryId)
-        {
-            var res = await _dbContext.Categories
-                .Where(x => x.Id == categoryId && x.IsVerified == true)
-                .FirstOrDefaultAsync();
-
-            if (res != null)
-            {
-                path.Add(res.Id);
-
-                if (res.ParentCategoryId != null)
-                {
-                    //var parentCat = _dbContext.Categories.Where(x => x.Id == res.ParentCategoryId)
-                    //    .FirstOrDefault();
-
-                    //foreach (var item in res.ChildCategories)
-                    //{
-                    await MyPathToRoot(path, res.ParentCategoryId.Value);
-                    //}
-                }
-            }
-            return path;
-        }
-
-        public async Task<List<int>> PathToLeaf(int rootId)
-        {
-            List<int> path = await _dbContext.Categories
-                .Where(x => x.ParentCategoryId == rootId)
-                .Select(s => s.Id)
-                .ToListAsync();
-
-            if (path.Count == 0)
-            {
-                return path;
-            }
-            else
-            {
-                path.ForEach(async x =>
-                {
-                    path.AddRange(await PathToLeaf(x));
-                });
-            }
-
-            path.Add(rootId);
-
-            return path;
-        }
-
-        public async Task<List<int>> MyPathToLeaf(List<int> path, int rootId, bool takeAll)
-        {
-            Category res;
-            if (takeAll)
-                res = await _dbContext.Categories
-                   .Include(i => i.ChildCategories)
-                   .Where(x => x.Id == rootId)
-                   .FirstOrDefaultAsync();
-            else
-                res = await _dbContext.Categories
-                   .Include(i => i.ChildCategories)
-                   .Where(x => x.Id == rootId && x.IsVerified == true)
-                   .FirstOrDefaultAsync();
-
-            if (res != null)
-            {
-                path.Add(res.Id);
-                if (res.ChildCategories != null)
-                {
-                    foreach (var item in res.ChildCategories)
-                    {
-                        await MyPathToLeaf(path, item.Id, takeAll);
-                    }
-                }
-            }
-            return path;
-        }
-
-        public async Task<bool> AddCategory(CategoryForSetDTO dto)
+        public async Task<Guid?> AddCategory(CategoryForSetDTO dto)
         {
             if (dto.ParentCategoryId != null && !(await _dbContext.Categories.AnyAsync(x => x.Id == dto.ParentCategoryId)))
                 throw new BadRequestException($"there is no category with : {dto.ParentCategoryId}");
@@ -250,41 +107,25 @@ namespace DSP.ProductService.Services
                 .Select(s => s.Arrange)
                 .FirstOrDefaultAsync();
 
+            var id = Guid.NewGuid();
+
             var category = new Category
             {
+                Id = id,
                 Name = dto.Name,
                 ParentCategoryId = dto.ParentCategoryId,
                 Arrange = latestArrangeId + 1,
                 IsVerified = true
             };
 
-            var fileNameBase = Guid.NewGuid().ToString();
-
-
-            var path = @"wwwroot/Categories/";
-
-            var source = dto.Img.OpenReadStream();
-
-            //var image = Image.FromStream(source);
-
-            var fileNameS = fileNameBase + "_S.png";// + dto.Img.FileName.Split('.').Last();
-            var fileNameM = fileNameBase + "_M.png";// + dto.Img.FileName.Split('.').Last();
-            var fileNameL = fileNameBase + "_L.png";// + dto.Img.FileName.Split('.').Last();
-
-            //ImageHelper.SaveJpeg(source, 100, 100, path + fileNameS, 60);
-            //ImageHelper.SaveJpeg(source, 200, 200, path + fileNameM, 80);
-            //ImageHelper.SaveJpeg(source, image.Height, image.Width, path + fileNameL, 100);
-
-            category.ImageUrl_S = "/Categories/" + fileNameS;
-            category.ImageUrl_M = "/Categories/" + fileNameM;
-            category.ImageUrl_L = "/Categories/" + fileNameL;
-
             _dbContext.Categories.Add(category);
 
-            return await _dbContext.SaveChangesAsync() > 0;
+            if (await _dbContext.SaveChangesAsync() > 0)
+                return id;
+            return null;
         }
 
-        public async Task<bool> DeleteCategory(int id)
+        public async Task<bool> DeleteCategory(Guid id)
         {
             var existing = await _dbContext.Categories
                 .Include(i => i.ChildCategories)
@@ -368,7 +209,7 @@ namespace DSP.ProductService.Services
             }
         }
 
-        public async Task<bool> UpdateCategory(int catId, CategoryForSetDTO category)
+        public async Task<bool> UpdateCategory(Guid catId, CategoryForSetDTO category)
         {
             var existing = await _dbContext.Categories.FirstOrDefaultAsync(x => x.Id == catId);
 
@@ -437,7 +278,7 @@ namespace DSP.ProductService.Services
             return categoryResult;
         }
 
-        public async Task<List<CategoryToReturnDTO>> CategoryArrange(int? parentId, List<int> arrangeIds)
+        public async Task<List<CategoryToReturnDTO>> CategoryArrange(Guid? parentId, List<int> arrangeIds)
         {
             var categories = await _dbContext.Categories
                  .Where(x => x.ParentCategoryId == parentId && x.IsVerified == true)
@@ -473,9 +314,9 @@ namespace DSP.ProductService.Services
                 }).ToList();
         }
 
-        public async Task<List<CategoryToReturnDTO>> GetSubCategories(int id)
+        public async Task<List<CategoryToReturnDTO>> GetSubCategories(Guid id)
         {
-            List<int> childCats = new();
+            List<Guid> childCats = new();
             childCats = await MyPathToLeaf(childCats, id, false);
 
             return await _dbContext.Categories.Where(x => childCats.Contains(x.Id) && x.IsVerified == true)
@@ -493,9 +334,9 @@ namespace DSP.ProductService.Services
 
         }
 
-        public async Task<List<CategoryToReturnDTO>> GetParentCategories(int id)
+        public async Task<List<CategoryToReturnDTO>> GetParentCategories(Guid id)
         {
-            List<int> childCats = new();
+            List<Guid> childCats = new();
             childCats = await MyPathToRoot(childCats, id);
 
             return await _dbContext.Categories.Where(x => childCats.Contains(x.Id) && x.IsVerified == true)
@@ -511,6 +352,56 @@ namespace DSP.ProductService.Services
                 })
                 .ToListAsync();
 
+        }
+        public async Task<List<Guid>> MyPathToRoot(List<Guid> path, Guid categoryId)
+        {
+            var res = await _dbContext.Categories
+                .Where(x => x.Id == categoryId && x.IsVerified == true)
+                .FirstOrDefaultAsync();
+
+            if (res != null)
+            {
+                path.Add(res.Id);
+
+                if (res.ParentCategoryId != null)
+                {
+                    //var parentCat = _dbContext.Categories.Where(x => x.Id == res.ParentCategoryId)
+                    //    .FirstOrDefault();
+
+                    //foreach (var item in res.ChildCategories)
+                    //{
+                    await MyPathToRoot(path, res.ParentCategoryId.Value);
+                    //}
+                }
+            }
+            return path;
+        }
+        public async Task<List<Guid>> MyPathToLeaf(List<Guid> path, Guid rootId, bool takeAll)
+        {
+            Category res;
+            if (takeAll)
+                res = await _dbContext.Categories
+                   .Include(i => i.ChildCategories)
+                   .Where(x => x.Id == rootId)
+                   .FirstOrDefaultAsync();
+            else
+                res = await _dbContext.Categories
+                   .Include(i => i.ChildCategories)
+                   .Where(x => x.Id == rootId && x.IsVerified == true)
+                   .FirstOrDefaultAsync();
+
+            if (res != null)
+            {
+                path.Add(res.Id);
+                if (res.ChildCategories != null)
+                {
+                    foreach (var item in res.ChildCategories)
+                    {
+                        await MyPathToLeaf(path, item.Id, takeAll);
+                    }
+                }
+            }
+            return path;
         }
 
         public List<CategoryWithBrandDTO> GetCategoriesWithBrands()

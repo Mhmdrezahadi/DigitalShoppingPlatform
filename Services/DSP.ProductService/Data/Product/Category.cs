@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DSP.ProductService.Data
 {
-    public class Category : BaseEntity
+    public class Category : BaseEntity<Guid>
     {
         [Required]
         public string Name { get; set; }
@@ -14,7 +14,7 @@ namespace DSP.ProductService.Data
         public string ImageUrl_L { get; set; }
         public string ImageUrl_M { get; set; }
         public string ImageUrl_S { get; set; }
-        public int? ParentCategoryId { get; set; }
+        public Guid? ParentCategoryId { get; set; }
         [ForeignKey(nameof(ParentCategoryId))]
         public Category ParentCategory { get; set; }
         public ICollection<Category> ChildCategories { get; set; }

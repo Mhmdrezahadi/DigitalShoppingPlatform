@@ -10,7 +10,7 @@ namespace DSP.ProductService.Data
         public Product Product { get; set; }
         public Guid ProductId { get; set; }
         public Category Category { get; set; }
-        public int CategoryId { get; set; }
+        public Guid CategoryId { get; set; }
         public ICollection<FastPricingKey> FastPricingKeys { get; set; }
     }
     public class FastPricingDefinitionConfiguration : IEntityTypeConfiguration<FastPricingDefinition>

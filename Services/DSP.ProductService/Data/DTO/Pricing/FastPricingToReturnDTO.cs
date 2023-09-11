@@ -6,7 +6,7 @@ namespace DSP.ProductService.Data
     public class FastPricingToReturnDTO
     {
         public Guid DeviceId { get; set; }
-        public int CategoryId { get; set; }
+        public Guid CategoryId { get; set; }
         public string CategoryName { get; set; }
         public decimal MinPrice { get; set; }
         public decimal MaxPrice { get; set; }

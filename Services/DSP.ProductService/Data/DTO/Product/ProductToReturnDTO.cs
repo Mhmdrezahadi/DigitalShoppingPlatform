@@ -33,8 +33,8 @@ namespace DSP.ProductService.Data
         /// </summary>
         public string ProductTestDescription { get; set; }
         public ICollection<ColorDTO> Colors { get; set; }
-        public int CategoryId { get; set; }
-        public int? BrandId { get; set; }
+        public Guid CategoryId { get; set; }
+        public Guid? BrandId { get; set; }
         public CategoryToReturnDTO Category { get; set; }
         public CategoryToReturnDTO Brand { get; set; }
         public CategoryToReturnDTO Model { get; set; }

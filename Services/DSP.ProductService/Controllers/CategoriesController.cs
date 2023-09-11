@@ -48,7 +48,7 @@ namespace DSP.Gateway.Controllers
         }
 
         [HttpGet("Categories/BrandsOfCategory")]
-        public async Task<ActionResult<List<CategoryToReturnDTO>>> BrandsOfCategory([FromQuery] int rootId)
+        public async Task<ActionResult<List<CategoryToReturnDTO>>> BrandsOfCategory([FromQuery] Guid rootId)
         {
             List<CategoryToReturnDTO> ls = await _categoryHttpService.BrandsOfCategory(rootId);
 
@@ -56,7 +56,7 @@ namespace DSP.Gateway.Controllers
         }
 
         [HttpGet("Categories/ModelsOfBrand")]
-        public async Task<ActionResult<List<CategoryToReturnDTO>>> ModelsOfBrand([FromQuery] int brandCategoryid)
+        public async Task<ActionResult<List<CategoryToReturnDTO>>> ModelsOfBrand([FromQuery] Guid brandCategoryid)
         {
             List<CategoryToReturnDTO> ls = await _categoryHttpService.ModelsOfBrand(brandCategoryid);
 
@@ -64,9 +64,9 @@ namespace DSP.Gateway.Controllers
         }
 
         [HttpPost("Category")]
-        public async Task<ActionResult<bool>> AddCategory(
+        public async Task<ActionResult<Guid>> AddCategory(
             [Required][FromForm] string Name,
-            [FromForm] int? parentCategoryId,
+            [FromForm] Guid? parentCategoryId,
             [Required] IFormFile Image)
         {
             CategoryForSetDTO dto = new CategoryForSetDTO
@@ -75,13 +75,13 @@ namespace DSP.Gateway.Controllers
                 ParentCategoryId = parentCategoryId,
                 Img = Image
             };
-            bool res = await _categoryHttpService.AddCategory(dto);
+            var res = await _categoryHttpService.AddCategory(dto);
 
             return Ok(res);
         }
 
         [HttpDelete("Category/{id}")]
-        public async Task<ActionResult<bool>> DeleteCategory(int id)
+        public async Task<ActionResult<bool>> DeleteCategory(Guid id)
         {
             bool res = await _categoryHttpService.DeleteCategory(id);
 
@@ -90,9 +90,9 @@ namespace DSP.Gateway.Controllers
 
         [HttpPut("Category/{catId}")]
         public async Task<ActionResult<bool>> UpdateCategory(
-            int catId,
+            Guid catId,
             [FromForm] string Name,
-            [FromForm] int? parentCategoryId,
+            [FromForm] Guid? parentCategoryId,
             IFormFile Image)
         {
 
@@ -108,7 +108,7 @@ namespace DSP.Gateway.Controllers
         }
 
         [HttpPut("Category/Arrange")]
-        public async Task<ActionResult<List<CategoryToReturnDTO>>> CategoryArrange(int? parentId, List<int> arrangeIds)
+        public async Task<ActionResult<List<CategoryToReturnDTO>>> CategoryArrange(Guid? parentId, List<int> arrangeIds)
         {
             List<CategoryToReturnDTO> ls = await _categoryHttpService.CategoryArrange(parentId, arrangeIds);
 
@@ -116,14 +116,14 @@ namespace DSP.Gateway.Controllers
         }
 
         [HttpGet("Category/{id}/SubCategories")]
-        public async Task<ActionResult<List<CategoryToReturnDTO>>> GetSubCategories(int id)
+        public async Task<ActionResult<List<CategoryToReturnDTO>>> GetSubCategories(Guid id)
         {
             List<CategoryToReturnDTO> ls = await _categoryHttpService.GetSubCategories(id);
 
             return Ok(ls);
         }
         [HttpGet("Category/{id}/ParentCategories")]
-        public async Task<ActionResult<List<CategoryToReturnDTO>>> GetParentCategories(int id)
+        public async Task<ActionResult<List<CategoryToReturnDTO>>> GetParentCategories(Guid id)
         {
             List<CategoryToReturnDTO> ls = await _categoryHttpService.GetParentCategories(id);
 

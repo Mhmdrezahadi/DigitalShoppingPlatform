@@ -10,7 +10,7 @@ namespace DSP.ProductService.Services
         Task<bool> AddToPropertyKeys(ProductKeysDefinitionsDTO dto);
         Task<bool> EditPropertyKeys(List<PropertyKeyDTO> list);
         Task<bool> RemovePropertyKeys(Guid id);
-        Task<List<PropertyKeyDTO>> GetPropertyKeys(int catId);
+        Task<List<PropertyKeyDTO>> GetPropertyKeys(Guid catId);
         Task<bool> DefineFastPricingKey(FastPricingDefinitionToCreateDTO dto);
         Task<PagedList<FastPricingDefinitionToReturnDTO>> FastPricingList(PaginationParams<FastPricingSearch> pagination);
         Task<FastPricingDefinitionToReturnDTO> FastPricing(Guid id);
@@ -29,6 +29,6 @@ namespace DSP.ProductService.Services
         Task<PagedList<TransactionToReturnDTO>> TransactionList(PaginationParams<TransactionSearch> pagination);
         TransactionToReturnDTO GetTransaction(Guid id);
         TransactionItemDTO GetTransactionItems(Guid transactionId);
-        bool IsModelDefined(int id);
+        bool IsModelDefined(Guid id);
     }
 }

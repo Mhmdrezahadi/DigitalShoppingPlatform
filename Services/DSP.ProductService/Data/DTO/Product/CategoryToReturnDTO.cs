@@ -2,7 +2,7 @@
 {
     public class CategoryToReturnDTO
     {
-        public int CategoryId { get; set; }
+        public Guid CategoryId { get; set; }
         public string Name { get; set; }
         public int Level { get; set; }
         public string ImageUrl_L { get; set; }

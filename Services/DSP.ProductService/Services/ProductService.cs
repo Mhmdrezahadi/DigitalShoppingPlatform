@@ -685,7 +685,7 @@ namespace DSP.ProductService.Services
             //    }).FirstOrDefault();
         }
 
-        public void GetSubcategories(List<int> list, Category category)
+        public void GetSubcategories(List<Guid> list, Category category)
         {
 
             list.Add(category.Id);
@@ -752,11 +752,11 @@ namespace DSP.ProductService.Services
 
             if (pagination.Query is not null)
             {
-                if (pagination.Query.CategoryId is not null and > 0)
+                if (pagination.Query.CategoryId is not null)
                 {
                     //var path = await _categoryService.PathToLeaf(pagination.Query.CategoryId.Value);
 
-                    List<int> path = new List<int>();
+                    List<Guid> path = new List<Guid>();
                     path = await _categoryService.MyPathToLeaf(path, pagination.Query.CategoryId.Value, true);
 
                     query = query.Where(x => path.Contains(x.CategoryId));
@@ -772,7 +772,7 @@ namespace DSP.ProductService.Services
 
                 if (pagination.Query.BrandId is not null)
                 {
-                    List<int> path = new List<int>();
+                    List<Guid> path = new List<Guid>();
                     path = await _categoryService.MyPathToLeaf(path, pagination.Query.BrandId.Value, true);
 
                     query = query.Where(x => path.Contains(x.CategoryId));
@@ -843,11 +843,11 @@ namespace DSP.ProductService.Services
 
             if (pagination.Query is not null)
             {
-                if (pagination.Query.CategoryId is not null and > 0)
+                if (pagination.Query.CategoryId is not null)
                 {
                     //var path = await _categoryService.PathToLeaf(pagination.Query.CategoryId.Value);
 
-                    List<int> path = new List<int>();
+                    List<Guid> path = new List<Guid>();
                     path = await _categoryService.MyPathToLeaf(path, pagination.Query.CategoryId.Value, true);
 
                     query = query.Where(x => path.Contains(x.CategoryId));
@@ -861,7 +861,7 @@ namespace DSP.ProductService.Services
                 }
                 if (pagination.Query.BrandId is not null)
                 {
-                    List<int> path = new List<int>();
+                    List<Guid> path = new List<Guid>();
                     path = await _categoryService.MyPathToLeaf(path, pagination.Query.BrandId.Value, true);
 
                     query = query.Where(x => path.Contains(x.CategoryId));
