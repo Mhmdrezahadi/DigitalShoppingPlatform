@@ -4,7 +4,7 @@ namespace DSP.Gateway.Data
 {
     public class ProductKeysDefinitionsDTO
     {
-        public int CategoryId { get; set; }
+        public Guid CategoryId { get; set; }
         public List<PropertyKeyForCreateDTO> PropertyKeys { get; set; }
     }
 }

@@ -70,7 +70,7 @@ namespace DSP.Gateway.Sevices
             throw new NotImplementedException();
         }
 
-        public async Task<List<PropertyKeyDTO>> GetPropertyKeys(int catId)
+        public async Task<List<PropertyKeyDTO>> GetPropertyKeys(Guid catId)
         {
             var response = await Client.GetAsync($"PropertyKeys/{catId}");
 

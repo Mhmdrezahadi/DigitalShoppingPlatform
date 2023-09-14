@@ -99,7 +99,7 @@ namespace DSP.Gateway.Controllers
         [HttpGet("Web/ModelsOfBrand")]
         [HttpGet("Admin/ModelsOfBrand")]
         [AllowAnonymous]
-        public async Task<ActionResult<List<CategoryToReturnDTO>>> ModelsOfBrand([FromQuery] int brandCategoryid)
+        public async Task<ActionResult<List<CategoryToReturnDTO>>> ModelsOfBrand([FromQuery] Guid brandCategoryid)
         {
             List<CategoryToReturnDTO> ls = await _categoryHttpService.ModelsOfBrand(brandCategoryid);
 
@@ -141,7 +141,7 @@ namespace DSP.Gateway.Controllers
         /// <returns></returns>
         [Authorize(Roles = "Admin,SuperAdmin")]
         [HttpDelete("Admin/Category/{id}")]
-        public async Task<ActionResult<bool>> DeleteCategory(int id)
+        public async Task<ActionResult<bool>> DeleteCategory(Guid id)
         {
             bool res = await _categoryHttpService.DeleteCategory(id);
 
@@ -159,7 +159,7 @@ namespace DSP.Gateway.Controllers
         [Authorize(Roles = "Admin,SuperAdmin")]
         [HttpPut("Admin/Category/{catId}")]
         public async Task<ActionResult<bool>> UpdateCategory(
-            int catId,
+            Guid catId,
             [FromForm] string Name,
             [FromForm] Guid? parentCategoryId,
             IFormFile Image)
@@ -183,7 +183,7 @@ namespace DSP.Gateway.Controllers
         /// <param name="arrangeIds"></param>
         /// <returns></returns>
         [HttpPut("Admin/Category/Arrange")]
-        public async Task<ActionResult<List<CategoryToReturnDTO>>> CategoryArrange(int? parentId, List<int> arrangeIds)
+        public async Task<ActionResult<List<CategoryToReturnDTO>>> CategoryArrange(Guid? parentId, List<int> arrangeIds)
         {
             List<CategoryToReturnDTO> ls = await _categoryHttpService.CategoryArrange(parentId, arrangeIds);
 
@@ -199,7 +199,7 @@ namespace DSP.Gateway.Controllers
         [HttpGet("App/Category/{id}/SubCategories")]
         [HttpGet("Web/Category/{id}/SubCategories")]
         [AllowAnonymous]
-        public async Task<ActionResult<List<CategoryToReturnDTO>>> GetSubCategories(int id)
+        public async Task<ActionResult<List<CategoryToReturnDTO>>> GetSubCategories(Guid id)
         {
             List<CategoryToReturnDTO> ls = await _categoryHttpService.GetSubCategories(id);
 
@@ -215,7 +215,7 @@ namespace DSP.Gateway.Controllers
         [HttpGet("App/Category/{id}/ParentCategories")]
         [HttpGet("Web/Category/{id}/ParentCategories")]
         [AllowAnonymous]
-        public async Task<ActionResult<List<CategoryToReturnDTO>>> GetParentCategories(int id)
+        public async Task<ActionResult<List<CategoryToReturnDTO>>> GetParentCategories(Guid id)
         {
             List<CategoryToReturnDTO> ls = await _categoryHttpService.GetParentCategories(id);
 

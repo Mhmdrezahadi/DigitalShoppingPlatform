@@ -98,21 +98,7 @@ namespace DSP.ProductService.Services
                             ColorId = s.ColorId,
                             ProductId = id,
                         }).ToList(),
-                        //Colors = dto.Colors.Select(s => new Color
-                        //{
-                        //    Code = s.Code,
-                        //    Name = s.Name,
-                        //    ProductId = id
-                        //}).ToList()
                     });
-
-                    await _dbContext.SaveChangesAsync();
-
-                    var dbImages = _dbContext.Images.Where(x => dto.ImagesIds.Contains(x.Id)).ToList();
-                    foreach (var image in dbImages)
-                    {
-                        image.ProductId = id;
-                    }
 
                     await _dbContext.SaveChangesAsync();
 
@@ -180,13 +166,6 @@ namespace DSP.ProductService.Services
                         await _dbContext.SaveChangesAsync();
                     }
 
-                    var dbImages = _dbContext.Images.Where(x => dto.ImagesIds.Contains(x.Id)).ToList();
-
-                    foreach (var image in dbImages)
-                    {
-                        image.ProductId = productId;
-                        _dbContext.Images.Update(image);
-                    }
                     await _dbContext.SaveChangesAsync();
 
                     var dbDetails = await _dbContext.ProductDetails

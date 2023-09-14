@@ -80,9 +80,9 @@ namespace DSP.Gateway.Controllers
         }
 
         [HttpPut("Category/{catId}")]
-        public async Task<ActionResult<bool>> UpdateCategory(Guid catId, CategoryForSetDTO dto)
+        public async Task<ActionResult<Guid?>> UpdateCategory(Guid catId, CategoryForSetDTO dto)
         {
-            bool res = await _categoryHttpService.UpdateCategory(catId, dto);
+            var res = await _categoryHttpService.UpdateCategory(catId, dto);
 
             return Ok(res);
         }

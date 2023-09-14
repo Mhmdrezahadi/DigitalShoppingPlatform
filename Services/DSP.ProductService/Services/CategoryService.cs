@@ -209,12 +209,12 @@ namespace DSP.ProductService.Services
             }
         }
 
-        public async Task<bool> UpdateCategory(Guid catId, CategoryForSetDTO category)
+        public async Task<Guid?> UpdateCategory(Guid catId, CategoryForSetDTO category)
         {
             var existing = await _dbContext.Categories.FirstOrDefaultAsync(x => x.Id == catId);
 
             if (existing == null)
-                return false;
+                return null;
 
             if (category.Name != null)
             {
@@ -224,7 +224,10 @@ namespace DSP.ProductService.Services
 
             _dbContext.Categories.Update(existing);
 
-            return await _dbContext.SaveChangesAsync() > 0;
+            if (await _dbContext.SaveChangesAsync() > 0)
+                return existing.Id;
+
+            return null;
         }
 
         public async Task<List<CategoryToReturnDTO>> AllModels()

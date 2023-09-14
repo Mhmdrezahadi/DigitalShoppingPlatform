@@ -19,7 +19,7 @@ namespace DSP.Gateway.Sevices
             client.BaseAddress = new Uri("http://localhost:5301/DSP/ProductService/");
             Client = client;
         }
-        //TODO Fix ImageService
+
         public async Task<bool> AddCategory(CategoryForSetDTO dto)
         {
             var data = JsonConvert.SerializeObject(dto);
@@ -30,16 +30,16 @@ namespace DSP.Gateway.Sevices
 
             if (result.HasValue)
             {
-                //var polly = Policy.Handle<Exception>()
-                //        .CircuitBreakerAsync(2, TimeSpan.FromSeconds(20));
+                var polly = Policy.Handle<Exception>()
+                        .CircuitBreakerAsync(2, TimeSpan.FromSeconds(20));
 
-                //await polly.ExecuteAsync(async () =>
-                //{
-                //});
-                using var channel = GrpcChannel.ForAddress("https://localhost:5302");
-                var uploadFileClient = new UploadFileService.UploadFileServiceClient(channel);
-                await UploadImage.SendFile(uploadFileClient, dto.Img, result.ToString());
-                return true;
+                await polly.ExecuteAsync(async () =>
+                {
+                    using var channel = GrpcChannel.ForAddress("https://localhost:5302");
+                    var uploadFileClient = new UploadFileService.UploadFileServiceClient(channel);
+                    await UploadImage.SendFile(uploadFileClient, dto.Img, result.ToString());
+                    return true;
+                });
             }
             return false;
         }
@@ -68,7 +68,7 @@ namespace DSP.Gateway.Sevices
             return brandsOfCategory;
         }
 
-        public async Task<List<CategoryToReturnDTO>> CategoryArrange(int? parentId, List<int> arrangeIds)
+        public async Task<List<CategoryToReturnDTO>> CategoryArrange(Guid? parentId, List<int> arrangeIds)
         {
             var data = JsonConvert.SerializeObject(arrangeIds);
 
@@ -86,22 +86,15 @@ namespace DSP.Gateway.Sevices
             return null;
         }
 
-        public async Task<bool> DeleteCategory(int id)
+        public async Task<bool> DeleteCategory(Guid id)
         {
             var response = await Client.DeleteAsync($"Category/{id}");
             var result = JsonConvert.DeserializeObject<bool>(await response.Content.ReadAsStringAsync());
             response.EnsureSuccessStatusCode();
+            using var channel = GrpcChannel.ForAddress("https://localhost:5302");
+            var uploadFileClient = new UploadFileService.UploadFileServiceClient(channel);
+            await UploadImage.DeleteFile(uploadFileClient, id.ToString());
             return result;
-        }
-
-        public Task FirstRunAfterBoot()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<int>> FlattenedTree(int CategoryId)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<List<CategoryWithBrandDTO>> GetCategoriesWithBrands()
@@ -112,7 +105,7 @@ namespace DSP.Gateway.Sevices
             return categoryWithBrands;
         }
 
-        public async Task<List<CategoryToReturnDTO>> GetParentCategories(int id)
+        public async Task<List<CategoryToReturnDTO>> GetParentCategories(Guid id)
         {
 
             var response = await Client.GetAsync($"Category/{id}/ParentCategories");
@@ -121,12 +114,7 @@ namespace DSP.Gateway.Sevices
             return parentCategories;
         }
 
-        public Task<List<int>> GetRootNodesIds()
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<List<CategoryToReturnDTO>> GetSubCategories(int id)
+        public async Task<List<CategoryToReturnDTO>> GetSubCategories(Guid id)
         {
             var response = await Client.GetAsync($"Category/{id}/SubCategories");
             var subCategories = JsonConvert.DeserializeObject<List<CategoryToReturnDTO>>(await response.Content.ReadAsStringAsync());
@@ -134,32 +122,12 @@ namespace DSP.Gateway.Sevices
             return subCategories;
         }
 
-        public List<int> GetTreeFromCache(int CategoryId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<List<CategoryToReturnDTO>> ModelsOfBrand(int brandCategoryid)
+        public async Task<List<CategoryToReturnDTO>> ModelsOfBrand(Guid brandCategoryid)
         {
             var response = await Client.GetAsync($"Categories/ModelsOfBrand?brandCategoryid={brandCategoryid}");
             var modelsOfBrand = JsonConvert.DeserializeObject<List<CategoryToReturnDTO>>(await response.Content.ReadAsStringAsync());
             response.EnsureSuccessStatusCode();
             return modelsOfBrand;
-        }
-
-        public Task<List<int>> MyPathToLeaf(List<int> path, int rootId, bool isVerified)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<int>> PathToLeaf(int rootId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<int>> PathToRoot(int categoryId)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<List<CategoryToReturnDTO>> RootCategories()
@@ -169,10 +137,29 @@ namespace DSP.Gateway.Sevices
             response.EnsureSuccessStatusCode();
             return rootCategories;
         }
-        // TODO Fix ImageService
-        public Task<bool> UpdateCategory(int catId, CategoryForSetDTO category)
+
+        public async Task<bool> UpdateCategory(Guid catId, CategoryForSetDTO dto)
         {
-            throw new NotImplementedException();
+            var data = JsonConvert.SerializeObject(dto);
+
+            var response = await Client.PutAsync($"Category/{catId}", new StringContent(data, Encoding.UTF8, MediaTypeNames.Application.Json));
+            response.EnsureSuccessStatusCode();
+            var result = JsonConvert.DeserializeObject<Guid?>(await response.Content.ReadAsStringAsync());
+
+            if (result.HasValue)
+            {
+                var polly = Policy.Handle<Exception>()
+                        .CircuitBreakerAsync(2, TimeSpan.FromSeconds(20));
+
+                await polly.ExecuteAsync(async () =>
+                {
+                    using var channel = GrpcChannel.ForAddress("https://localhost:5302");
+                    var uploadFileClient = new UploadFileService.UploadFileServiceClient(channel);
+                    await UploadImage.UpdateFile(uploadFileClient, dto.Img, result.ToString());
+                    return true;
+                });
+            }
+            return false;
         }
     }
 }

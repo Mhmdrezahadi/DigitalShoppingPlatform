@@ -6,14 +6,19 @@ option csharp_namespace = "DSP.ImageService.Protos";
 package scalar;
 
 service UploadFileService {
-  rpc SendFile (Chunk) returns (SendResult);
+  rpc AddFile (Chunk) returns (Result);
+  rpc UpdateFile (Chunk) returns (Result);
+  rpc DeleteFile (FileId) returns (Result);
 }
 
 message Chunk {
         string postId=1;
         bytes Content = 2;
 }
+message FileId{
+    string Id = 1;
+}
 
-message SendResult {
+message Result {
         bool Success = 1;
 }
