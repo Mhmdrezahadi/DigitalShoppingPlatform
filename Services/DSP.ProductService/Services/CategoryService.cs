@@ -216,32 +216,6 @@ namespace DSP.ProductService.Services
             if (existing == null)
                 return false;
 
-            var fileNameBase = Guid.NewGuid().ToString();
-
-            var fileNameS = fileNameBase + "_S.png";// + dto.Img.FileName.Split('.').Last();
-            var fileNameM = fileNameBase + "_M.png";// + dto.Img.FileName.Split('.').Last();
-            var fileNameL = fileNameBase + "_L.png";// + dto.Img.FileName.Split('.').Last();
-
-            var path = @"wwwroot/Categories/";
-            if (category.Img != null)
-            {
-                var Deletepath = @"wwwroot";
-                //ImageHelper.RemoveJpeg(Deletepath + existing.ImageUrl_L);
-                //ImageHelper.RemoveJpeg(Deletepath + existing.ImageUrl_M);
-                //ImageHelper.RemoveJpeg(Deletepath + existing.ImageUrl_S);
-
-                //var source = category.Img.OpenReadStream();
-                //var image = Image.FromStream(source);
-
-                //ImageHelper.SaveJpeg(source, 100, 100, path + fileNameS, 60);
-                //ImageHelper.SaveJpeg(source, 200, 200, path + fileNameM, 80);
-                //ImageHelper.SaveJpeg(source, image.Height, image.Width, path + fileNameL, 100);
-
-                existing.ImageUrl_L = "/Categories/" + fileNameL;
-                existing.ImageUrl_M = "/Categories/" + fileNameM;
-                existing.ImageUrl_S = "/Categories/" + fileNameS;
-
-            }
             if (category.Name != null)
             {
                 existing.Name = category.Name;

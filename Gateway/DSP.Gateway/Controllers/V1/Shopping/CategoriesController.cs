@@ -120,7 +120,7 @@ namespace DSP.Gateway.Controllers
         [HttpPost("Admin/Category")]
         public async Task<ActionResult<bool>> AddCategory(
             [Required][FromForm] string Name,
-            [FromForm] int? parentCategoryId,
+            [FromForm] Guid? parentCategoryId,
             [Required] IFormFile Image)
         {
             CategoryForSetDTO dto = new CategoryForSetDTO
@@ -161,7 +161,7 @@ namespace DSP.Gateway.Controllers
         public async Task<ActionResult<bool>> UpdateCategory(
             int catId,
             [FromForm] string Name,
-            [FromForm] int? parentCategoryId,
+            [FromForm] Guid? parentCategoryId,
             IFormFile Image)
         {
 

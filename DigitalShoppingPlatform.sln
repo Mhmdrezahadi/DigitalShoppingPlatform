@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSP.ProductService", "Servi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSP.ImageCropService", "Services\DSP.ImageCropService\DSP.ImageCropService.csproj", "{0B6F5BD9-B142-414C-982B-331D88241A98}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSP.ImageDeliveryService", "Services\DSP.ImageDeliveryService\DSP.ImageDeliveryService.csproj", "{49C7467B-DDB0-4D02-AE34-61EA9B445185}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +39,10 @@ Global
 		{0B6F5BD9-B142-414C-982B-331D88241A98}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0B6F5BD9-B142-414C-982B-331D88241A98}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0B6F5BD9-B142-414C-982B-331D88241A98}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49C7467B-DDB0-4D02-AE34-61EA9B445185}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49C7467B-DDB0-4D02-AE34-61EA9B445185}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49C7467B-DDB0-4D02-AE34-61EA9B445185}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49C7467B-DDB0-4D02-AE34-61EA9B445185}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -46,6 +52,7 @@ Global
 		{C4F9A11A-BC34-4C60-B402-79B65063F1AB} = {EAE8EE5A-3CFF-4F61-8943-87779BC9E2CA}
 		{18C59FC8-31DD-452E-AFDC-1E702DBECE57} = {EAE8EE5A-3CFF-4F61-8943-87779BC9E2CA}
 		{0B6F5BD9-B142-414C-982B-331D88241A98} = {EAE8EE5A-3CFF-4F61-8943-87779BC9E2CA}
+		{49C7467B-DDB0-4D02-AE34-61EA9B445185} = {EAE8EE5A-3CFF-4F61-8943-87779BC9E2CA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {60873002-0DB8-4218-97B7-688297A1226E}

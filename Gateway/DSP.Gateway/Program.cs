@@ -1,4 +1,5 @@
 using DSP.Gateway.Configs;
+using DSP.Gateway.Controllers;
 using DSP.Gateway.Data;
 using DSP.Gateway.Entities;
 using DSP.Gateway.Sevices;
@@ -70,7 +71,7 @@ builder.Services.AddSwaggerGen(c =>
             Type = ReferenceType.SecurityScheme
         }
     };
-
+    
     c.AddSecurityDefinition("Bearer", securityScheme);
 
     var securityRequirement = new OpenApiSecurityRequirement
@@ -177,6 +178,7 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+
 builder.Services.AddHttpClient<CategoryHttpService>();
 builder.Services.AddHttpClient<ColorHttpService>();
 builder.Services.AddHttpClient<ManageHttpService>();
@@ -184,6 +186,7 @@ builder.Services.AddHttpClient<OrderHttpService>();
 builder.Services.AddHttpClient<PaymentHttpService>();
 builder.Services.AddHttpClient<ProductHttpService>();
 builder.Services.AddHttpClient<SellHttpService>();
+builder.Services.AddHttpClient<ImageHttpService>();
 
 
 var app = builder.Build();
@@ -192,7 +195,10 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(o =>
+    {
+        o.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.None);
+    });
 }
 
 app.UseAuthorization();

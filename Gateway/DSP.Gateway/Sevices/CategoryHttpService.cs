@@ -30,15 +30,15 @@ namespace DSP.Gateway.Sevices
 
             if (result.HasValue)
             {
-                var polly = Policy.Handle<Exception>()
-                        .CircuitBreakerAsync(2, TimeSpan.FromSeconds(20));
+                //var polly = Policy.Handle<Exception>()
+                //        .CircuitBreakerAsync(2, TimeSpan.FromSeconds(20));
 
-                await polly.ExecuteAsync(async () =>
-                {
-                    using var channel = GrpcChannel.ForAddress("https://localhost:5303");
-                    var uploadFileClient = new UploadFileService.UploadFileServiceClient(channel);
-                    await UploadImage.SendFile(uploadFileClient, dto.Img, result.ToString());
-                });
+                //await polly.ExecuteAsync(async () =>
+                //{
+                //});
+                using var channel = GrpcChannel.ForAddress("https://localhost:5302");
+                var uploadFileClient = new UploadFileService.UploadFileServiceClient(channel);
+                await UploadImage.SendFile(uploadFileClient, dto.Img, result.ToString());
                 return true;
             }
             return false;

@@ -9,7 +9,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddGrpc();
-
 builder.Services.AddDbContext<ImageServiceDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("ImageServiceConnection"));

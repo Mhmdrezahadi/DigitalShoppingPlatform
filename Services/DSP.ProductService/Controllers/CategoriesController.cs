@@ -64,17 +64,8 @@ namespace DSP.Gateway.Controllers
         }
 
         [HttpPost("Category")]
-        public async Task<ActionResult<Guid>> AddCategory(
-            [Required][FromForm] string Name,
-            [FromForm] Guid? parentCategoryId,
-            [Required] IFormFile Image)
+        public async Task<ActionResult<Guid>> AddCategory(CategoryForSetDTO dto)
         {
-            CategoryForSetDTO dto = new CategoryForSetDTO
-            {
-                Name = Name,
-                ParentCategoryId = parentCategoryId,
-                Img = Image
-            };
             var res = await _categoryHttpService.AddCategory(dto);
 
             return Ok(res);
@@ -89,19 +80,8 @@ namespace DSP.Gateway.Controllers
         }
 
         [HttpPut("Category/{catId}")]
-        public async Task<ActionResult<bool>> UpdateCategory(
-            Guid catId,
-            [FromForm] string Name,
-            [FromForm] Guid? parentCategoryId,
-            IFormFile Image)
+        public async Task<ActionResult<bool>> UpdateCategory(Guid catId, CategoryForSetDTO dto)
         {
-
-            CategoryForSetDTO dto = new CategoryForSetDTO
-            {
-                Img = Image,
-                Name = Name,
-                ParentCategoryId = parentCategoryId
-            };
             bool res = await _categoryHttpService.UpdateCategory(catId, dto);
 
             return Ok(res);
