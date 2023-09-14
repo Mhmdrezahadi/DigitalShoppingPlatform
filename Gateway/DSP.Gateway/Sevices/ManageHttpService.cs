@@ -3,6 +3,9 @@ using DSP.Gateway.Data;
 using DSP.Gateway.Data.Pricing;
 using DSP.Gateway.Utilities;
 using Newtonsoft.Json;
+using Polly;
+using System.Collections.Generic;
+using System.Text;
 
 namespace DSP.Gateway.Sevices
 {
@@ -11,13 +14,18 @@ namespace DSP.Gateway.Sevices
         public HttpClient Client { get; }
         public ManageHttpService(HttpClient client)
         {
-            client.BaseAddress = new Uri("http://localhost:5301/DSP/ProductService");
+            client.BaseAddress = new Uri("http://localhost:5301/DSP/ProductService/Manage/");
             Client = client;
         }
 
-        public Task<bool> AddToPropertyKeys(ProductKeysDefinitionsDTO dto)
+        public async Task<bool> AddToPropertyKeys(ProductKeysDefinitionsDTO dto)
         {
-            throw new NotImplementedException();
+            var data = JsonConvert.SerializeObject(dto);
+
+            var response = await Client.PostAsync("AddToPropertyKeys", new StringContent(data, Encoding.UTF8, "application/json"));
+            response.EnsureSuccessStatusCode();
+            var result = JsonConvert.DeserializeObject<bool>(await response.Content.ReadAsStringAsync());
+            return result;
         }
 
         public Task<List<FAQToReturnDTO>> ArrangeFAQs(List<int> arrangeIds)
@@ -25,9 +33,16 @@ namespace DSP.Gateway.Sevices
             throw new NotImplementedException();
         }
 
-        public Task<bool> ChangeSellRequestStatus(Guid id, SellRequestStatusDTO dto)
+        public async Task<bool> ChangeSellRequestStatus(Guid id, SellRequestStatusDTO dto)
         {
-            throw new NotImplementedException();
+            var data = JsonConvert.SerializeObject(dto);
+
+            var response = await Client.PostAsync($"SellRequest/{id}", new StringContent(data, Encoding.UTF8, "application/json"));
+
+            var pricing = JsonConvert.DeserializeObject<bool>(await response.Content.ReadAsStringAsync());
+
+            response.EnsureSuccessStatusCode();
+            return pricing;
         }
 
         public Task<bool> DefineFastPricingKey(FastPricingDefinitionToCreateDTO dto)
@@ -35,24 +50,45 @@ namespace DSP.Gateway.Sevices
             throw new NotImplementedException();
         }
 
-        public Task<bool> DefinePropertyKes(ProductKeysDefinitionsDTO dto)
+        public async Task<bool> DefinePropertyKes(ProductKeysDefinitionsDTO dto)
         {
-            throw new NotImplementedException();
+            var data = JsonConvert.SerializeObject(dto);
+
+            var response = await Client.PostAsync("DefinePropertyKeys", new StringContent(data, Encoding.UTF8, "application/json"));
+            response.EnsureSuccessStatusCode();
+            var result = JsonConvert.DeserializeObject<bool>(await response.Content.ReadAsStringAsync());
+            return result;
         }
 
-        public Task<FastPricingToReturnDTO> DeviceInSellRequest(Guid reqId)
+        public async Task<FastPricingToReturnDTO> DeviceInSellRequest(Guid reqId)
         {
-            throw new NotImplementedException();
+            var response = await Client.GetAsync($"DeviceInSellRequest/{reqId}");
+
+            var pricing = JsonConvert.DeserializeObject<FastPricingToReturnDTO>
+                (await response.Content.ReadAsStringAsync());
+
+            response.EnsureSuccessStatusCode();
+            return pricing;
         }
 
-        public Task<bool> EditFastPricing(Guid definitionId, FastPricingDefinitionToCreateDTO dto)
+        public async Task<bool> EditFastPricing(Guid definitionId, FastPricingDefinitionToCreateDTO dto)
         {
-            throw new NotImplementedException();
+            var data = JsonConvert.SerializeObject(dto);
+
+            var response = await Client.PostAsync($"DefineFastPricing/{definitionId}", new StringContent(data, Encoding.UTF8, "application/json"));
+            response.EnsureSuccessStatusCode();
+            var result = JsonConvert.DeserializeObject<bool>(await response.Content.ReadAsStringAsync());
+            return result;
         }
 
-        public Task<bool> EditPropertyKeys(List<PropertyKeyDTO> list)
+        public async Task<bool> EditPropertyKeys(List<PropertyKeyDTO> list)
         {
-            throw new NotImplementedException();
+            var data = JsonConvert.SerializeObject(list);
+
+            var response = await Client.PostAsync("EditPropertyKeys", new StringContent(data, Encoding.UTF8, "application/json"));
+            response.EnsureSuccessStatusCode();
+            var result = JsonConvert.DeserializeObject<bool>(await response.Content.ReadAsStringAsync());
+            return result;
         }
 
         public Task<bool> FAQ(FAQToCreateDTO dto)
@@ -60,14 +96,26 @@ namespace DSP.Gateway.Sevices
             throw new NotImplementedException();
         }
 
-        public Task<FastPricingDefinitionToReturnDTO> FastPricing(Guid id)
+        public async Task<FastPricingDefinitionToReturnDTO> FastPricing(Guid id)
         {
-            throw new NotImplementedException();
+            var response = await Client.GetAsync($"FastPricing/{id}");
+
+            var def = JsonConvert.DeserializeObject<FastPricingDefinitionToReturnDTO>
+                (await response.Content.ReadAsStringAsync());
+
+            response.EnsureSuccessStatusCode();
+            return def;
         }
 
-        public Task<PagedList<FastPricingDefinitionToReturnDTO>> FastPricingList(PaginationParams<FastPricingSearch> pagination)
+        public async Task<PagedList<FastPricingDefinitionToReturnDTO>> FastPricingList(PaginationParams<FastPricingSearch> pagination)
         {
-            throw new NotImplementedException();
+            var response = await Client.GetAsync($"FastPricingList");
+
+            var list = JsonConvert.DeserializeObject<PagedList<FastPricingDefinitionToReturnDTO>>
+                (await response.Content.ReadAsStringAsync());
+
+            response.EnsureSuccessStatusCode();
+            return list;
         }
 
         public async Task<List<PropertyKeyDTO>> GetPropertyKeys(Guid catId)
@@ -81,19 +129,31 @@ namespace DSP.Gateway.Sevices
             return posts;
         }
 
-        public TransactionToReturnDTO GetTransaction(Guid id)
+        public async Task<TransactionToReturnDTO> GetTransaction(Guid id)
         {
-            throw new NotImplementedException();
+            var response = await Client.GetAsync($"PropertyKeys/{id}");
+
+            var posts = JsonConvert.DeserializeObject<TransactionToReturnDTO>
+                (await response.Content.ReadAsStringAsync());
+
+            response.EnsureSuccessStatusCode();
+            return posts;
         }
 
-        public TransactionItemDTO GetTransactionItems(Guid transactionId)
+        public async Task<TransactionItemDTO> GetTransactionItems(Guid transactionId)
         {
-            throw new NotImplementedException();
+            var response = await Client.GetAsync($"TransactionItems/{transactionId}");
+            response.EnsureSuccessStatusCode();
+            var result = JsonConvert.DeserializeObject<TransactionItemDTO>(await response.Content.ReadAsStringAsync());
+            return result;
         }
 
-        public bool IsModelDefined(int id)
+        public async Task<bool> IsModelDefined(int id)
         {
-            throw new NotImplementedException();
+            var response = await Client.GetAsync($"DefineFastPricing/IsModelDefined/{id}");
+            response.EnsureSuccessStatusCode();
+            var result = JsonConvert.DeserializeObject<bool>(await response.Content.ReadAsStringAsync());
+            return result;
         }
 
         public Task<bool> RemoveFAQ(Guid id)
@@ -101,14 +161,20 @@ namespace DSP.Gateway.Sevices
             throw new NotImplementedException();
         }
 
-        public bool RemoveFastPricingDefinition(Guid id)
+        public async Task<bool> RemoveFastPricingDefinition(Guid id)
         {
-            throw new NotImplementedException();
+            var response = await Client.DeleteAsync($"FastPricingDefinition/{id}");
+            response.EnsureSuccessStatusCode();
+            var result = JsonConvert.DeserializeObject<bool>(await response.Content.ReadAsStringAsync());
+            return result;
         }
 
-        public Task<bool> RemovePropertyKeys(Guid id)
+        public async Task<bool> RemovePropertyKeys(Guid id)
         {
-            throw new NotImplementedException();
+            var response = await Client.DeleteAsync($"PropertyKeys/{id}");
+            response.EnsureSuccessStatusCode();
+            var result = JsonConvert.DeserializeObject<bool>(await response.Content.ReadAsStringAsync());
+            return result;
         }
 
         public Task<bool> SecurityAndPrivacy(AppVariableDTO dto)
@@ -116,14 +182,20 @@ namespace DSP.Gateway.Sevices
             throw new NotImplementedException();
         }
 
-        public Task<SellRequestToReturnDTO> SellRequest(Guid id)
+        public async Task<SellRequestToReturnDTO> SellRequest(Guid id)
         {
-            throw new NotImplementedException();
+            var response = await Client.GetAsync($"SellRequest/{id}");
+            response.EnsureSuccessStatusCode();
+            var result = JsonConvert.DeserializeObject<SellRequestToReturnDTO>(await response.Content.ReadAsStringAsync());
+            return result; throw new NotImplementedException();
         }
 
-        public Task<PagedList<SellRequestToReturnDTO>> SellRequestList(PaginationParams<SellRequestSearch> pagination)
+        public async Task<PagedList<SellRequestToReturnDTO>> SellRequestList(PaginationParams<SellRequestSearch> pagination)
         {
-            throw new NotImplementedException();
+            var response = await Client.GetAsync($"SellRequest");
+            response.EnsureSuccessStatusCode();
+            var result = JsonConvert.DeserializeObject<PagedList<SellRequestToReturnDTO>>(await response.Content.ReadAsStringAsync());
+            return result;
         }
 
         public Task<bool> TermsAndCondition(AppVariableDTO dto)
@@ -131,9 +203,12 @@ namespace DSP.Gateway.Sevices
             throw new NotImplementedException();
         }
 
-        public Task<PagedList<TransactionToReturnDTO>> TransactionList(PaginationParams<TransactionSearch> pagination)
+        public async Task<PagedList<TransactionToReturnDTO>> TransactionList(PaginationParams<TransactionSearch> pagination)
         {
-            throw new NotImplementedException();
+            var response = await Client.GetAsync($"TransactionList");
+            response.EnsureSuccessStatusCode();
+            var result = JsonConvert.DeserializeObject<PagedList<TransactionToReturnDTO>>(await response.Content.ReadAsStringAsync());
+            return result;
         }
 
         public Task<bool> UpdateAboutUs(AppVariableDTO dto)

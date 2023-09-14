@@ -115,9 +115,9 @@ namespace DSP.Gateway.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("Admin/DefineFastPricing/IsModelDefined/{id}")]
-        public ActionResult<bool> IsModelDefined(int id)
+        public async Task<ActionResult<bool>> IsModelDefined(int id)
         {
-            bool res = _manageHttpService.IsModelDefined(id);
+            bool res = await _manageHttpService.IsModelDefined(id);
 
             return Ok(res);
         }
@@ -151,9 +151,9 @@ namespace DSP.Gateway.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete("Admin/FastPricingDefinition/{id}")]
-        public ActionResult<bool> RemoveFastPricingDefinition(Guid id)
+        public async Task<ActionResult<bool>> RemoveFastPricingDefinition(Guid id)
         {
-            bool res = _manageHttpService.RemoveFastPricingDefinition(id);
+            bool res = await _manageHttpService.RemoveFastPricingDefinition(id);
 
             return Ok(res);
         }
@@ -176,9 +176,9 @@ namespace DSP.Gateway.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("Admin/Transaction/{id}")]
-        public ActionResult<TransactionToReturnDTO> GetTransaction(Guid id)
+        public async Task<ActionResult<TransactionToReturnDTO>> GetTransaction(Guid id)
         {
-            TransactionToReturnDTO dto = _manageHttpService.GetTransaction(id);
+            TransactionToReturnDTO dto = await _manageHttpService.GetTransaction(id);
 
             return Ok(dto);
         }
@@ -188,9 +188,9 @@ namespace DSP.Gateway.Controllers
         /// <param name="transactionId"></param>
         /// <returns></returns>
         [HttpGet("Admin/TransactionItems/{transactionId}")]
-        public ActionResult<TransactionItemDTO> GetTransactionItems(Guid transactionId)
+        public async Task<ActionResult<TransactionItemDTO>> GetTransactionItems(Guid transactionId)
         {
-            TransactionItemDTO dto = _manageHttpService.GetTransactionItems(transactionId);
+            TransactionItemDTO dto = await _manageHttpService.GetTransactionItems(transactionId);
 
             return Ok(dto);
         }

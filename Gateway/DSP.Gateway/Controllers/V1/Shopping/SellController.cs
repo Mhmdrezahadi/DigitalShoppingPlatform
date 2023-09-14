@@ -119,9 +119,9 @@ namespace DSP.Gateway.Controllers
         /// <returns></returns>
         [HttpGet("Admin/SellRequestStatusCount")]
         [Authorize(Roles = "Admin,SuperAdmin")]
-        public ActionResult<List<SellRequestStatusCountDTO>> SellRequestStatusCount()
+        public async Task<ActionResult<List<SellRequestStatusCountDTO>>> SellRequestStatusCount()
         {
-            List<SellRequestStatusCountDTO> ls = _sellService.SellRequestStatusCount();
+            List<SellRequestStatusCountDTO> ls = await _sellService.SellRequestStatusCount();
 
             return Ok(ls);
         }
@@ -139,7 +139,7 @@ namespace DSP.Gateway.Controllers
         [HttpGet("Web/FastPricingKeysAndValues/{catId}")]
         [HttpGet("Admin/FastPricingKeysAndValues/{catId}")]
         [AllowAnonymous]
-        public async Task<ActionResult<List<FastPricingKeysAndDDsToReturnDTO>>> FastPricingKeysAndValues(int catId)
+        public async Task<ActionResult<List<FastPricingKeysAndDDsToReturnDTO>>> FastPricingKeysAndValues(Guid catId)
         {
             List<FastPricingKeysAndDDsToReturnDTO> ls = await _sellService.FastPricingKeysAndValues(catId);
 
@@ -157,7 +157,7 @@ namespace DSP.Gateway.Controllers
         [HttpGet("App/DeviceKeysAndValues/{catId}")]
         [HttpGet("Web/DeviceKeysAndValues/{catId}")]
         [HttpGet("Admin/DeviceKeysAndValues/{catId}")]
-        public async Task<ActionResult<List<FastPricingKeysAndDDsToReturnDTO>>> DeviceKeysAndValues(int catId)
+        public async Task<ActionResult<List<FastPricingKeysAndDDsToReturnDTO>>> DeviceKeysAndValues(Guid catId)
         {
             List<FastPricingKeysAndDDsToReturnDTO> ls = await _sellService.FastPricingKeysAndValues(catId);
 
@@ -190,13 +190,13 @@ namespace DSP.Gateway.Controllers
         /// <returns></returns>
         [HttpDelete("App/Device/{deviceId}")]
         [HttpDelete("Web/Device/{deviceId}")]
-        public ActionResult<bool> RemoveDevice(Guid deviceId)
+        public async Task<ActionResult<bool>> RemoveDevice(Guid deviceId)
         {
             var userName = User.GetUserName();
             var userId = User.GetUserId();
             var roles = User.GetRoles();
 
-            bool result = _sellService.RemoveDevice(deviceId, userId);
+            bool result = await _sellService.RemoveDevice(deviceId, userId);
 
             return Ok(result);
         }
@@ -208,13 +208,13 @@ namespace DSP.Gateway.Controllers
         /// <returns></returns>
         [HttpPut("App/Device/{deviceId}")]
         [HttpPut("Web/Device/{deviceId}")]
-        public ActionResult<bool> UpdateDevice(Guid deviceId, FastPricingForCreateDTO dto)
+        public async Task<ActionResult<bool>> UpdateDevice(Guid deviceId, FastPricingForCreateDTO dto)
         {
             var userName = User.GetUserName();
             var userId = User.GetUserId();
             var roles = User.GetRoles();
 
-            bool result = _sellService.UpdateDevice(deviceId, userId, dto);
+            bool result = await _sellService.UpdateDevice(deviceId, userId, dto);
 
             return Ok(result);
         }
@@ -237,7 +237,7 @@ namespace DSP.Gateway.Controllers
         }
 
         /// <summary>
-        /// درخواست فروش یک دستگاه به تل بال
+        /// درخواست فروش یک دستگاه به پلتفرم
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>

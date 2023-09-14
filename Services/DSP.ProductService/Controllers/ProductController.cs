@@ -101,14 +101,6 @@ namespace DSP.ProductService.Controllers
             return Ok(ls);
         }
 
-        [HttpGet("PropertyKeys")]
-        public async Task<ActionResult<List<PropertyKeyDTO>>> GetPropertyKeys(Guid catId)
-        {
-            List<PropertyKeyDTO> ls = await _manageService.GetPropertyKeys(catId);
-
-            return Ok(ls);
-        }
-
         [HttpPost("Product")]
         public async Task<ActionResult<Guid>> AddProduct([FromBody] ProductForCreateDTO dto)
         {

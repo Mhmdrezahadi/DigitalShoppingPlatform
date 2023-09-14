@@ -1,5 +1,9 @@
 ﻿
 using DSP.Gateway.Data;
+using DSP.Gateway.Entities;
+using Newtonsoft.Json;
+using Polly;
+using System.Text;
 
 namespace DSP.Gateway.Sevices
 {
@@ -8,57 +12,95 @@ namespace DSP.Gateway.Sevices
         public HttpClient Client { get; }
         public SellHttpService(HttpClient client)
         {
-            client.BaseAddress = new Uri("http://localhost:5301/DSP/ProductService");
+            client.BaseAddress = new Uri("http://localhost:5301/DSP/ProductService/Sell/");
             Client = client;
         }
-        public Task<Guid> AddDevice(Guid userId, FastPricingForCreateDTO dto)
+        public async Task<Guid> AddDevice(Guid userId, FastPricingForCreateDTO dto)
         {
-            throw new NotImplementedException();
+            var data = JsonConvert.SerializeObject(dto);
+
+            var response = await Client.PostAsync("Device/{userId}", new StringContent(data, Encoding.UTF8, "application/json"));
+            response.EnsureSuccessStatusCode();
+            var result = JsonConvert.DeserializeObject<Guid>(await response.Content.ReadAsStringAsync());
+            return result;
         }
 
-        public Task<List<FastPricingKeysAndDDsToReturnDTO>> FastPricingKeysAndValues(int catId)
+        public async Task<List<FastPricingKeysAndDDsToReturnDTO>> FastPricingKeysAndValues(Guid catId)
         {
-            throw new NotImplementedException();
+            var response = await Client.GetAsync($"FastPricingKeysAndValues/{catId}");
+            response.EnsureSuccessStatusCode();
+            var pricing = JsonConvert.DeserializeObject<List<FastPricingKeysAndDDsToReturnDTO>>(await response.Content.ReadAsStringAsync());
+            return pricing;
         }
 
-        public Task<FastPricingToReturnDTO> FastPricingValues(FastPricingForCreateDTO dto)
+        public async Task<FastPricingToReturnDTO> FastPricingValues(FastPricingForCreateDTO dto)
         {
-            throw new NotImplementedException();
+            var data = JsonConvert.SerializeObject(dto);
+
+            var response = await Client.PostAsync("FastPricingValues", new StringContent(data, Encoding.UTF8, "application/json"));
+            response.EnsureSuccessStatusCode();
+            var pricing = JsonConvert.DeserializeObject<FastPricingToReturnDTO>(await response.Content.ReadAsStringAsync());
+            return pricing;
         }
 
-        public Task<FastPricingToReturnDTO> MyDevice(Guid userId, Guid id)
+        public async Task<FastPricingToReturnDTO> MyDevice(Guid userId, Guid id)
         {
-            throw new NotImplementedException();
+            var response = await Client.GetAsync($"MyDevice/{userId}/{id}");
+            response.EnsureSuccessStatusCode();
+            var pricing = JsonConvert.DeserializeObject<FastPricingToReturnDTO>(await response.Content.ReadAsStringAsync());
+            return pricing;
         }
 
-        public Task<List<FastPricingToReturnDTO>> MyDeviceList(Guid userId)
+        public async Task<List<FastPricingToReturnDTO>> MyDeviceList(Guid userId)
         {
-            throw new NotImplementedException();
+            var response = await Client.GetAsync($"MyDeviceList/{userId}");
+            response.EnsureSuccessStatusCode();
+            var deviceList = JsonConvert.DeserializeObject<List<FastPricingToReturnDTO>>(await response.Content.ReadAsStringAsync());
+            return deviceList;
         }
 
-        public Task<List<SellRequestToReturnDTO>> MySellRequests(Guid userId)
+        public async Task<List<SellRequestToReturnDTO>> MySellRequests(Guid userId)
         {
-            throw new NotImplementedException();
+            var response = await Client.GetAsync($"MySellRequests/{userId}");
+            response.EnsureSuccessStatusCode();
+            var sellRequests = JsonConvert.DeserializeObject<List<SellRequestToReturnDTO>>(await response.Content.ReadAsStringAsync());
+            return sellRequests;
         }
 
-        public bool RemoveDevice(Guid deviceId, Guid userId)
+        public async Task<bool> RemoveDevice(Guid deviceId, Guid userId)
         {
-            throw new NotImplementedException();
+            var response = await Client.DeleteAsync($"MyDeviceList/{userId}/{deviceId}");
+            response.EnsureSuccessStatusCode();
+            var deviceList = JsonConvert.DeserializeObject<bool>(await response.Content.ReadAsStringAsync());
+            return deviceList;
         }
 
-        public Task<bool> SellRequest(SellRequestDTO dto)
+        public async Task<bool> SellRequest(SellRequestDTO dto)
         {
-            throw new NotImplementedException();
+            var data = JsonConvert.SerializeObject(dto);
+
+            var response = await Client.PostAsync("SellRequest", new StringContent(data, Encoding.UTF8, "application/json"));
+            response.EnsureSuccessStatusCode();
+            var deviceList = JsonConvert.DeserializeObject<bool>(await response.Content.ReadAsStringAsync());
+            return deviceList;
         }
 
-        public List<SellRequestStatusCountDTO> SellRequestStatusCount()
+        public async Task<List<SellRequestStatusCountDTO>> SellRequestStatusCount()
         {
-            throw new NotImplementedException();
+            var response = await Client.GetAsync($"SellRequestStatusCount");
+            response.EnsureSuccessStatusCode();
+            var count = JsonConvert.DeserializeObject<List<SellRequestStatusCountDTO>>(await response.Content.ReadAsStringAsync());
+            return count;
         }
 
-        public bool UpdateDevice(Guid deviceId, Guid userId, FastPricingForCreateDTO dto)
+        public async Task<bool> UpdateDevice(Guid deviceId, Guid userId, FastPricingForCreateDTO dto)
         {
-            throw new NotImplementedException();
+            var data = JsonConvert.SerializeObject(dto);
+
+            var response = await Client.PutAsync("Device/{userId}/{deviceId}", new StringContent(data, Encoding.UTF8, "application/json"));
+            response.EnsureSuccessStatusCode();
+            var deviceList = JsonConvert.DeserializeObject<bool>(await response.Content.ReadAsStringAsync());
+            return deviceList;
         }
     }
 }
