@@ -11,6 +11,8 @@ builder.Services.AddScoped<IProductService,ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IManageService, ManageService>();
 builder.Services.AddScoped<ISellService, SellService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+
 
 builder.Services.AddMemoryCache();
 

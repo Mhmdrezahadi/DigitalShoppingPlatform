@@ -1,4 +1,4 @@
-﻿namespace DSP.ProductService.Data.DTO.Other
+﻿namespace DSP.ProductService.Data
 {
     public class VerificationResponse
     {

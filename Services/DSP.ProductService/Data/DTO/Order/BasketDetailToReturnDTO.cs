@@ -28,7 +28,7 @@ namespace DSP.ProductService.Data
         /// </summary>
         public Status? Status { get; set; }
         public ColorDTO Color { get; set; }
-        public int CategoryId { get; set; }
+        public Guid CategoryId { get; set; }
         public int Count { get; set; }
     }
 }

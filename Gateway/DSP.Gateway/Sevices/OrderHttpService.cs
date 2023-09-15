@@ -1,6 +1,11 @@
 ﻿
 using DSP.Gateway.Data;
+using DSP.Gateway.Entities;
 using DSP.Gateway.Utilities;
+using Newtonsoft.Json;
+using Polly;
+using System;
+using System.Text;
 
 namespace DSP.Gateway.Sevices
 {
@@ -9,32 +14,49 @@ namespace DSP.Gateway.Sevices
         public HttpClient Client { get; }
         public OrderHttpService(HttpClient client)
         {
-            client.BaseAddress = new Uri("http://localhost:5301/DSP/ProductService");
+            client.BaseAddress = new Uri("http://localhost:5301/DSP/ProductService/Order/");
             Client = client;
         }
-        public Task<int> AddToBasket(Guid userId, Guid itemId, Guid ColorId)
+        public async Task<int> AddToBasket(Guid userId, Guid itemId, Guid colorId)
         {
-            throw new NotImplementedException();
+            var response = await Client.GetAsync($"AddToBasket/{userId}?itemId={itemId}&colorId={colorId}");
+            response.EnsureSuccessStatusCode();
+            var result = JsonConvert.DeserializeObject<int>(await response.Content.ReadAsStringAsync());
+            return result;
         }
 
-        public Task<bool> ChangeOrderStatus(Guid id, OrderStatusDTO dto)
+        public async Task<bool> ChangeOrderStatus(Guid id, OrderStatusDTO dto)
         {
-            throw new NotImplementedException();
+            var response = await Client.GetAsync($"OrderStatus/{id}?dto={dto}");
+            response.EnsureSuccessStatusCode();
+            var result = JsonConvert.DeserializeObject<bool>(await response.Content.ReadAsStringAsync());
+            return result;
         }
 
-        public BasketCountToReturnDTO ChangeProductsCountInBasket(Guid userId, bool action, Guid itemId, Guid colorId)
+        public async Task<BasketCountToReturnDTO> ChangeProductsCountInBasket(Guid userId, bool action, Guid itemId, Guid colorId)
         {
-            throw new NotImplementedException();
+            var response = await Client.GetAsync($"ChangeProductsCountInBasket/{userId}?action={action}&itemId={itemId}&ColorId={colorId}");
+            response.EnsureSuccessStatusCode();
+            var result = JsonConvert.DeserializeObject<BasketCountToReturnDTO>(await response.Content.ReadAsStringAsync());
+            return result;
         }
 
-        public CheckOutResultDTO CheckOutResult(string trackingCode, string authority)
+        public async Task<CheckOutResultDTO> CheckOutResult(string trackingCode, string authority)
         {
-            throw new NotImplementedException();
+            var response = await Client.GetAsync($"CheckoutResult");
+            response.EnsureSuccessStatusCode();
+            var result = JsonConvert.DeserializeObject<CheckOutResultDTO>(await response.Content.ReadAsStringAsync());
+            return result;
         }
 
-        public Task<CheckOutResponse> CheckoutTheBasket(Guid userId, BasketCheckOutDTO dto)
+        public async Task<CheckOutResponse> CheckoutTheBasket(Guid userId, BasketCheckOutDTO dto)
         {
-            throw new NotImplementedException();
+            var data = JsonConvert.SerializeObject(dto);
+
+            var response = await Client.PostAsync($"CheckoutTheBasket/{userId}", new StringContent(data, Encoding.UTF8, "application/json"));
+            response.EnsureSuccessStatusCode();
+            var res = JsonConvert.DeserializeObject<CheckOutResponse>(await response.Content.ReadAsStringAsync());
+            return res;
         }
 
         public Task<bool> CreateBasket(Guid UserId)
@@ -47,64 +69,101 @@ namespace DSP.Gateway.Sevices
             throw new NotImplementedException();
         }
 
-        public Task<int> GetBasketItemCount(Guid userId)
+        public async Task<int> GetBasketItemCount(Guid userId)
         {
-            throw new NotImplementedException();
+            var response = await Client.GetAsync($"BasketItemCount/{userId}");
+            response.EnsureSuccessStatusCode();
+            var result = JsonConvert.DeserializeObject<int>(await response.Content.ReadAsStringAsync());
+            return result;
         }
 
-        public Task<bool> IsProductInMyBasket(Guid userId, Guid productId, Guid colorId)
+        public async Task<bool> IsProductInMyBasket(Guid userId, Guid productId, Guid colorId)
         {
-            throw new NotImplementedException();
+            var response = await Client.GetAsync($"IsProductInMyBasket/{userId}?productId={productId}&colorId={colorId}");
+            response.EnsureSuccessStatusCode();
+            var result = JsonConvert.DeserializeObject<bool>(await response.Content.ReadAsStringAsync());
+            return result;
         }
 
-        public Task<BasketToReturnDTO> MyBasket(Guid userId)
+        public async Task<BasketToReturnDTO> MyBasket(Guid userId)
         {
-            throw new NotImplementedException();
+            var response = await Client.GetAsync($"MyBasket/{userId}");
+            response.EnsureSuccessStatusCode();
+            var result = JsonConvert.DeserializeObject<BasketToReturnDTO>(await response.Content.ReadAsStringAsync());
+            return result;
         }
 
-        public MyOrderToReturnDTO MyOrderDetails(Guid userId, Guid orderId)
+        public async Task<MyOrderToReturnDTO> MyOrderDetails(Guid userId, Guid orderId)
         {
-            throw new NotImplementedException();
+            var response = await Client.GetAsync($"MyOrderDetails/{userId}/{orderId}");
+            response.EnsureSuccessStatusCode();
+            var result = JsonConvert.DeserializeObject<MyOrderToReturnDTO>(await response.Content.ReadAsStringAsync());
+            return result;
         }
 
-        public Task<List<MyOrderToReturnDTO>> MyOrders(Guid userId)
+        public async Task<List<MyOrderToReturnDTO>> MyOrders(Guid userId)
         {
-            throw new NotImplementedException();
+            var response = await Client.GetAsync($"MyOrders/{userId}");
+            response.EnsureSuccessStatusCode();
+            var result = JsonConvert.DeserializeObject<List<MyOrderToReturnDTO>>(await response.Content.ReadAsStringAsync());
+            return result;
         }
 
-        public Task<OrderToReturnDTO> OrderDetail(Guid id)
+        public async Task<OrderToReturnDTO> OrderDetail(Guid id)
         {
-            throw new NotImplementedException();
+            var response = await Client.GetAsync($"Orders/{id}");
+            response.EnsureSuccessStatusCode();
+            var result = JsonConvert.DeserializeObject<OrderToReturnDTO>(await response.Content.ReadAsStringAsync());
+            return result;
         }
 
-        public Task<List<OrderDetailToReturnDTO>> OrderItems(Guid orderId)
+        public async Task<List<OrderDetailToReturnDTO>> OrderItems(Guid orderId)
         {
-            throw new NotImplementedException();
+            var response = await Client.GetAsync($"OrderItems/{orderId}");
+            response.EnsureSuccessStatusCode();
+            var result = JsonConvert.DeserializeObject<List<OrderDetailToReturnDTO>>(await response.Content.ReadAsStringAsync());
+            return result;
         }
 
-        public Task<PagedList<OrderToReturnDTO>> OrdersList(PaginationParams<OrderSearch> pagination)
+        public async Task<PagedList<OrderToReturnDTO>> OrdersList(PaginationParams<OrderSearch> pagination)
         {
-            throw new NotImplementedException();
+            var response = await Client.GetAsync($"OrdersList");
+            response.EnsureSuccessStatusCode();
+            var result = JsonConvert.DeserializeObject<PagedList<OrderToReturnDTO>>(await response.Content.ReadAsStringAsync());
+            return result;
         }
 
-        public List<OrderStatusCountDTO> OrderStatusCount()
+        public async Task<List<OrderStatusCountDTO>> OrderStatusCount()
         {
-            throw new NotImplementedException();
+            var response = await Client.GetAsync($"OrderStatusCount");
+            response.EnsureSuccessStatusCode();
+            var result = JsonConvert.DeserializeObject<List<OrderStatusCountDTO>>(await response.Content.ReadAsStringAsync());
+            return result;
         }
 
-        public Task<BasketCountToReturnDTO> RemoveFromBasket(Guid userId, Guid itemId, Guid colorId)
+        public async Task<BasketCountToReturnDTO> RemoveFromBasket(Guid userId, Guid itemId, Guid colorId)
         {
-            throw new NotImplementedException();
+            var response = await Client.DeleteAsync($"RemoveFromBasket/{userId}?itemId={itemId}&ColorId={colorId}");
+            response.EnsureSuccessStatusCode();
+            var result = JsonConvert.DeserializeObject<BasketCountToReturnDTO>(await response.Content.ReadAsStringAsync());
+            return result;
         }
 
-        public Task<bool> SetBasketAddress(Guid userId, BasketAddressDTO dto)
+        public async Task<bool> SetBasketAddress(Guid userId, BasketAddressDTO dto)
         {
-            throw new NotImplementedException();
+            var data = JsonConvert.SerializeObject(dto);
+
+            var response = await Client.PutAsync($"BasketAddress/{userId}", new StringContent(data, Encoding.UTF8, "application/json"));
+            response.EnsureSuccessStatusCode();
+            var res = JsonConvert.DeserializeObject<bool>(await response.Content.ReadAsStringAsync());
+            return res;
+
         }
 
-        public Task VerifyCheckOut(string trackingCode, string authority, string status)
+        public async Task VerifyCheckOut(string trackingCode, string authority, string status)
         {
-            throw new NotImplementedException();
+            var response = await Client.GetAsync($"VerifyCheckOut/{trackingCode}?authority={authority}&status={status}");
+            response.EnsureSuccessStatusCode();
         }
     }
 }

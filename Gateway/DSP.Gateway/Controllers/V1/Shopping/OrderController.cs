@@ -33,13 +33,13 @@ namespace DSP.Gateway.Controllers
         /// <returns></returns>
         [HttpGet("App/AddToBasket")]
         [HttpGet("Web/AddToBasket")]
-        public async Task<ActionResult<int>> AddToBasket([Required] Guid ItemId, [Required] Guid ColorId)
+        public async Task<ActionResult<int>> AddToBasket([Required] Guid ItemId, [Required] Guid colorId)
         {
             var userName = User.GetUserName();
             var userId = User.GetUserId();
             var roles = User.GetRoles();
 
-            int result = await _orderHttpService.AddToBasket(userId, ItemId, ColorId);
+            int result = await _orderHttpService.AddToBasket(userId, ItemId, colorId);
 
             return Ok(result);
         }
@@ -52,17 +52,17 @@ namespace DSP.Gateway.Controllers
         /// </remarks>
         /// <param name="action"></param>
         /// <param name="ItemId"></param>
-        /// <param name="ColorId"></param>
+        /// <param name="colorId"></param>
         /// <returns></returns>
         [HttpGet("App/ChangeProductsCountInBasket")]
         [HttpGet("Web/ChangeProductsCountInBasket")]
-        public ActionResult<BasketCountToReturnDTO> ChangeProductsCountInBasket([Required] bool action, [Required] Guid ItemId, [Required] Guid ColorId)
+        public async Task<ActionResult<BasketCountToReturnDTO>> ChangeProductsCountInBasket([Required] bool action, [Required] Guid ItemId, [Required] Guid colorId)
         {
             var userName = User.GetUserName();
             var userId = User.GetUserId();
             var roles = User.GetRoles();
 
-            BasketCountToReturnDTO result = _orderHttpService.ChangeProductsCountInBasket(userId, action, ItemId, ColorId);
+            BasketCountToReturnDTO result = await _orderHttpService.ChangeProductsCountInBasket(userId, action, ItemId, colorId);
 
             return Ok(result);
         }
@@ -145,9 +145,9 @@ namespace DSP.Gateway.Controllers
         /// <returns></returns>
         [HttpGet("Admin/OrderStatusCount")]
         [Authorize(Roles = "Admin,SuperAdmin")]
-        public ActionResult<List<OrderStatusCountDTO>> OrderStatusCount()
+        public async Task<ActionResult<List<OrderStatusCountDTO>>> OrderStatusCount()
         {
-            List<OrderStatusCountDTO> ls = _orderHttpService.OrderStatusCount();
+            List<OrderStatusCountDTO> ls = await _orderHttpService.OrderStatusCount();
 
             return Ok(ls);
         }
@@ -261,23 +261,9 @@ namespace DSP.Gateway.Controllers
             var roles = User.GetRoles();
 
 
-            MyOrderToReturnDTO dto = _orderHttpService.MyOrderDetails(userId, orderId);
+            MyOrderToReturnDTO dto = await _orderHttpService.MyOrderDetails(userId, orderId);
 
             return Ok(dto);
-        }
-
-        [HttpGet("App/ApplyCouponToBasket/{basketId}")]
-        [HttpGet("Web/ApplyCouponToBasket/{basketId}")]
-        public async Task<ActionResult<bool>> ApplyCouponToBasket([FromQuery] string couponCode, [FromRoute] Guid basketId)
-        {
-            return Ok(Task.FromResult(true));
-        }
-
-        [HttpGet("App/RemoveCouponFromBasket/{basketId}")]
-        [HttpGet("Web/RemoveCouponFromBasket/{basketId}")]
-        public async Task<ActionResult<bool>> RemoveCouponFromBasket([FromRoute] Guid basketId)
-        {
-            return Ok(Task.FromResult(true));
         }
 
         /// <summary>
@@ -334,9 +320,9 @@ namespace DSP.Gateway.Controllers
         [HttpGet("Web/CheckoutResult")]
         [HttpGet("App/CheckoutResult")]
         [AllowAnonymous]
-        public ActionResult<CheckOutResultDTO> PaymentResponse([Required][FromQuery] string trackingCode, [Required][FromQuery] string authority)
+        public async Task<ActionResult<CheckOutResultDTO>> PaymentResponse([Required][FromQuery] string trackingCode, [Required][FromQuery] string authority)
         {
-            CheckOutResultDTO dto = _orderHttpService.CheckOutResult(trackingCode, authority);
+            CheckOutResultDTO dto = await _orderHttpService.CheckOutResult(trackingCode, authority);
 
             return Ok(dto);
         }
