@@ -29,9 +29,9 @@ namespace DSP.ProductService.Controllers
         }
 
         [HttpGet("ChangeProductsCountInBasket/{userId}")]
-        public ActionResult<BasketCountToReturnDTO> ChangeProductsCountInBasket(Guid userId, [Required] bool action, [Required] Guid ItemId, [Required] Guid ColorId)
+        public ActionResult<BasketCountToReturnDTO> ChangeProductsCountInBasket(Guid userId, [Required] bool action, [Required] Guid ItemId, [Required] Guid colorId)
         {
-            BasketCountToReturnDTO result = _orderService.ChangeProductsCountInBasket(userId, action, ItemId, ColorId);
+            BasketCountToReturnDTO result = _orderService.ChangeProductsCountInBasket(userId, action, ItemId, colorId);
 
             return Ok(result);
         }
