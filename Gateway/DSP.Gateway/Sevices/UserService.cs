@@ -243,14 +243,15 @@ namespace DSP.Gateway.Sevices
             var smsApi = new KavenegarApi("7A57496334696D4E67446E48753150356A50575079312B4179455A775A4F41656E5A7A4E616A396C6B306B3D");
             var random = new Random();
             var verificationCode = random.Next(1111, 9999).ToString();
-            var result = smsApi.Send("", mobileNumber, $"کد تایید : {verificationCode}");
+            SendResult result;
 
             if (!_env.IsDevelopment())
             {
+                result = smsApi.Send("", mobileNumber, $"کد تایید : {verificationCode}");
                 //todo //surround with try catch
                 try
                 {
-                     result = smsApi.VerifyLookup(mobileNumber, verificationCode, "DSPOTP");
+                    result = smsApi.VerifyLookup(mobileNumber, verificationCode, "DSPOTP");
                 }
                 catch (Exception ex)
                 {
