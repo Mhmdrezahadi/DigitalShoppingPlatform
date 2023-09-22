@@ -80,7 +80,7 @@ namespace DSP.Gateway.Controllers
         [HttpGet("Web/BrandsOfCategory")]
         [HttpGet("Admin/BrandsOfCategory")]
         [AllowAnonymous]
-        public async Task<ActionResult<List<CategoryToReturnDTO>>> BrandsOfCategory([FromQuery] int rootId)
+        public async Task<ActionResult<List<CategoryToReturnDTO>>> BrandsOfCategory([FromQuery] Guid rootId)
         {
             List<CategoryToReturnDTO> ls = await _categoryHttpService.BrandsOfCategory(rootId);
 

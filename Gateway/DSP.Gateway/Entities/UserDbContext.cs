@@ -1,9 +1,7 @@
-﻿
-using DSP.Gateway.Entities;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace DSP.Gateway.Data
+namespace DSP.Gateway.Entities
 {
     public class UserDbContext : IdentityDbContext<User, Role, Guid, UserClaim, UserRole, UserLogin, RoleClaim, UserToken>
     {

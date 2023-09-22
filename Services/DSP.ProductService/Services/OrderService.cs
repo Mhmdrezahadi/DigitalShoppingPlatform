@@ -3,6 +3,7 @@
 using DSP.ProductService.Data;
 using DSP.ProductService.Utilities;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System.Net;
 
 namespace DSP.ProductService.Services
@@ -12,13 +13,16 @@ namespace DSP.ProductService.Services
         private readonly ProductServiceDbContext _dbContext;
         private readonly ILogger<OrderService> _logger;
         private readonly IProductService _productService;
+        private readonly IWebHostEnvironment _env;
         public OrderService(ProductServiceDbContext dbContext,
             ILogger<OrderService> logger,
-            IProductService productService)
+            IProductService productService,
+            IWebHostEnvironment env)
         {
             _dbContext = dbContext;
             _logger = logger;
             _productService = productService;
+            _env = env;
         }
 
         public async Task<int> AddToBasket(Guid userId, Guid itemId, Guid ColorId)
@@ -672,7 +676,7 @@ namespace DSP.ProductService.Services
                 RequestForPayResponse response = new();
                 string selectedGate = "زرین پال";
 
-                   // response = await _paymentService.RequestForPay(dto.PaymentGateWayId, dbBasket, TrackingCode);
+                response = await RequestForPay(dto.PaymentGateWayId, dbBasket, TrackingCode);
                 
 
                 using (var dbContextTransaction = _dbContext.Database.BeginTransaction())
@@ -747,7 +751,35 @@ namespace DSP.ProductService.Services
                 throw new AppException("مشکل در اتصال به درگاه پرداخت");
             }
         }
+        public async Task<RequestForPayResponse> RequestForPay(Guid? paymentGateWayId, Basket dbBasket, string TrackingCode)
+        {
 
+            var callBackurl = "CallbackURL" + TrackingCode;
+
+            var paymentRequest = new PaymentRequest(
+                "ZarinPalMerchanID",
+                (long)dbBasket.Price,
+                callBackurl,
+                "پرداخت سبد خرید تل بال");
+
+            URLs url = new URLs(_env.IsDevelopment());
+            var _HttpCore = new HttpCore();
+            _HttpCore.URL = url.GetPaymentRequestURL();
+            _HttpCore.Method = Method.POST;
+            _HttpCore.Raw = paymentRequest;
+
+
+            String response = _HttpCore.Get();
+
+            PaymentResponse _Response = JsonConvert.DeserializeObject<PaymentResponse>(response);
+            _Response.PaymentURL = url.GetPaymenGatewayURL(_Response.Authority);
+
+            return new RequestForPayResponse
+            {
+                MerchantId = "ZarinPalMerchanID",
+                PaymentResponse = _Response
+            };
+        }
         public async Task VerifyCheckOut(string trackingCode, string authority, string status)
         {
 

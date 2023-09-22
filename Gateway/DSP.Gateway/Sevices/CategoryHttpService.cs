@@ -60,7 +60,7 @@ namespace DSP.Gateway.Sevices
             return allModels;
         }
 
-        public async Task<List<CategoryToReturnDTO>> BrandsOfCategory(int rootId)
+        public async Task<List<CategoryToReturnDTO>> BrandsOfCategory(Guid rootId)
         {
             var response = await Client.GetAsync($"Categories/BrandsOfCategory?rootId={rootId}");
             var brandsOfCategory = JsonConvert.DeserializeObject<List<CategoryToReturnDTO>>(await response.Content.ReadAsStringAsync());
@@ -133,7 +133,8 @@ namespace DSP.Gateway.Sevices
         public async Task<List<CategoryToReturnDTO>> RootCategories()
         {
             var response = await Client.GetAsync($"Categories/RootCategories");
-            var rootCategories = JsonConvert.DeserializeObject<List<CategoryToReturnDTO>>(await response.Content.ReadAsStringAsync());
+            var rootCategories = JsonConvert.DeserializeObject<List<CategoryToReturnDTO>>(
+                await response.Content.ReadAsStringAsync());
             response.EnsureSuccessStatusCode();
             return rootCategories;
         }

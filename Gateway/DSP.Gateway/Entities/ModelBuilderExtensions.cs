@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata;
 using System.Reflection;
 
-namespace DSP.Gateway.Data
+namespace DSP.Gateway.Entities
 {
     public static class ModelBuilderExtensions
     {

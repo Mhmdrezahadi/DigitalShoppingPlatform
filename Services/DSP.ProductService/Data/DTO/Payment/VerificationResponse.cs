@@ -1,4 +1,6 @@
-﻿namespace DSP.ProductService.Data
+﻿using System;
+
+namespace DSP.ProductService.Data
 {
     public class VerificationResponse
     {
@@ -8,6 +10,7 @@
         public int? Status { get; set; }
         public ExtraDetail ExtraDetail { get; set; }
     }
+
     public class ExtraDetail
     {
         public Transaction Transaction;
